@@ -1,0 +1,64 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}{{ payment.application_number }}{% endblock %}
+{% block heading %}{{ payment.application_number }}{% endblock %}
+{% block crumb %}Payments / Detail{% endblock %}
+{% block content %}
+<p><strong>Status:</strong> {{ payment.get_status_display }}</p>
+<p><strong>Purpose:</strong> {{ payment.get_purpose_display }}</p>
+<p><strong>Method:</strong> {{ payment.get_provider_display }}</p>
+<p><strong>Amount:</strong> KES {{ payment.amount_kes }}</p>
+<p><strong>Phone:</strong> {{ payment.phone_number }}</p>
+<p><strong>Name:</strong> {{ payment.applicant_name }}</p>
+{% with ticket=payment.event_ticket.first %}
+  {% if ticket %}
+    <p><strong>Event:</strong> <a href="{% url 'events_admin:ticket_list' ticket.event_id %}">{{ ticket.event.title }}</a></p>
+    <p><strong>Ticket reference:</strong> {{ ticket.reference_code }} ({{ ticket.quantity }} ticket{{ ticket.quantity|pluralize }}, {{ ticket.get_status_display }})</p>
+  {% endif %}
+{% endwith %}
+{% if payment.provider == "PAYHERO" %}
+  <p><strong>Provider reference:</strong> {{ payment.provider_reference|default:"—" }}</p>
+  <p><strong>M-Pesa receipt:</strong> {{ payment.mpesa_receipt|default:"—" }}</p>
+{% endif %}
+{% if payment.failure_reason %}<p><strong>Failure reason:</strong> {{ payment.failure_reason }}</p>{% endif %}
+
+{% if payment.provider == "MANUAL" and manual_submissions %}
+<div class="card" style="padding:1.25rem;margin:1rem 0;">
+  <h3 style="margin-top:0;">Manual submission {% if manual_submissions|length > 1 %}history ({{ manual_submissions|length }} attempts){% endif %}</h3>
+  {% for sub in manual_submissions %}
+  <div style="{% if not forloop.first %}margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--admin-border,#e5e9ef);{% endif %}">
+    {% if not forloop.first %}<p style="font-size:0.8rem;color:#94a3b8;text-transform:uppercase;letter-spacing:0.04em;">Earlier attempt</p>{% endif %}
+    <p><strong>Transaction code:</strong> {{ sub.transaction_code }}</p>
+    <p><strong>Phone used:</strong> {{ sub.phone_number_used }}</p>
+    <p><strong>Amount submitted:</strong> KES {{ sub.amount_submitted }}</p>
+    <p><strong>Payment date:</strong> {{ sub.payment_date }}</p>
+    <p><strong>Confidence:</strong> {{ sub.get_confidence_display }}</p>
+    <p><strong>Verification status:</strong> {{ sub.get_verification_status_display }}</p>
+    {% if sub.verified_by %}<p><strong>Verified by:</strong> {{ sub.verified_by }} on {{ sub.verified_at|date:"j M Y H:i" }}</p>{% endif %}
+    {% if sub.verification_notes %}<p><strong>Notes:</strong> {{ sub.verification_notes }}</p>{% endif %}
+    {% if sub.screenshot %}<p><a href="{% url 'payments_admin:manual_screenshot' sub.pk %}" target="_blank">View screenshot &rarr;</a></p>{% endif %}
+  </div>
+  {% endfor %}
+  {% if payment.status == "PENDING_VERIFICATION" %}
+    <a href="{% url 'payments_admin:manual_verification_queue' %}" class="btn btn--primary" style="margin-top:1rem;">Go to verification queue &rarr;</a>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if payment.provider == "PAYHERO" and payment.status == "PENDING" or payment.provider == "PAYHERO" and payment.status == "PROCESSING" %}
+<form method="post" action="{% url 'payments_admin:reconcile' payment.pk %}" style="margin:1rem 0;">
+  {% csrf_token %}
+  <button type="submit" class="btn btn--primary">Re-check with PayHero now</button>
+  <p style="font-size:0.85rem;color:#666;margin-top:0.5rem;">This re-verifies the payment directly with PayHero, it never marks a payment paid on its own.</p>
+</form>
+{% endif %}
+
+<h3 class="section-title">Attempt history</h3>
+<table class="table">
+  <thead><tr><th>Kind</th><th>Succeeded</th><th>When</th></tr></thead>
+  <tbody>
+  {% for a in attempts %}
+    <tr><td>{{ a.get_kind_display }}</td><td>{% if a.succeeded %}Yes{% else %}No{% endif %}</td><td>{{ a.created_at|date:"j M Y H:i:s" }}</td></tr>
+  {% empty %}<tr><td colspan="3">No attempts recorded.</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

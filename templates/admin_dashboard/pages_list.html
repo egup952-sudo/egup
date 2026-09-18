@@ -1,0 +1,24 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Pages{% endblock %}
+{% block heading %}Pages{% endblock %}
+{% block crumb %}Pages{% endblock %}
+{% block content %}
+<a href="{% url 'content_admin:page_create' %}" class="btn btn--primary" style="margin-bottom:1rem;display:inline-block;">+ New Page</a>
+<table class="table">
+  <thead><tr><th>Title</th><th>Slug</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+  {% for p in pages %}
+    <tr>
+      <td>{{ p.title }}</td>
+      <td><a href="/pages/{{ p.slug }}.html" target="_blank">/pages/{{ p.slug }}.html</a></td>
+      <td>{{ p.get_status_display }}</td>
+      <td>
+        <a href="{% url 'content_admin:page_edit' p.pk %}">Edit</a>
+        <form method="post" action="{% url 'content_admin:page_toggle_publish' p.pk %}" style="display:inline;">{% csrf_token %}<button type="submit" style="background:none;border:none;color:#0b5cff;cursor:pointer;margin-left:8px;">{% if p.status == "PUBLISHED" %}Unpublish{% else %}Publish{% endif %}</button></form>
+        <form method="post" action="{% url 'content_admin:page_delete' p.pk %}" style="display:inline;" onsubmit="return confirm('Delete this page?');">{% csrf_token %}<button type="submit" style="background:none;border:none;color:#b42318;cursor:pointer;margin-left:8px;">Delete</button></form>
+      </td>
+    </tr>
+  {% empty %}<tr><td colspan="4">No pages yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

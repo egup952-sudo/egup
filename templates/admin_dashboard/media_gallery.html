@@ -1,0 +1,29 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Gallery{% endblock %}
+{% block heading %}Gallery{% endblock %}
+{% block crumb %}Gallery{% endblock %}
+{% block content %}
+<form method="post" action="{% url 'media_lib_admin:gallery_upload' %}" enctype="multipart/form-data" class="card" style="padding:1.25rem;margin-bottom:1.5rem;">
+  {% csrf_token %}
+  <div class="form-field"><label for="images">Add image(s)</label><input type="file" id="images" name="images" accept="image/*" multiple required></div>
+  <div class="form-row form-row--2">
+    <div class="form-field"><label for="caption">Caption</label><input type="text" id="caption" name="caption"></div>
+    <div class="form-field"><label for="alt_text">Alt text</label><input type="text" id="alt_text" name="alt_text"></div>
+  </div>
+  <button type="submit" class="btn btn--primary">Upload</button>
+  <p style="font-size:0.85rem;color:#666;margin-top:0.5rem;">Uploading never replaces or deletes existing images, each upload is added as a new image.</p>
+</form>
+
+<div class="gallery-grid">
+  {% for img in images %}
+    <div class="card" style="padding:0.5rem;">
+      <img src="{{ img.file.url }}" alt="{{ img.alt_text }}" style="width:100%;height:160px;object-fit:cover;border-radius:6px;">
+      <p style="font-size:0.85rem;margin:0.5rem 0;">{{ img.caption|default:"(no caption)" }}, {% if img.is_published %}Published{% else %}Hidden{% endif %}</p>
+      <div style="display:flex;gap:8px;">
+        <form method="post" action="{% url 'media_lib_admin:gallery_toggle' img.pk %}">{% csrf_token %}<button type="submit" class="btn btn--ghost-navy" style="padding:4px 10px;font-size:0.8rem;">{% if img.is_published %}Unpublish{% else %}Publish{% endif %}</button></form>
+        <form method="post" action="{% url 'media_lib_admin:gallery_delete' img.pk %}" onsubmit="return confirm('Delete this image? This only removes this image, not others.');">{% csrf_token %}<button type="submit" style="background:none;border:none;color:#b42318;cursor:pointer;font-size:0.8rem;">Delete</button></form>
+      </div>
+    </div>
+  {% empty %}<p>No images uploaded yet.</p>{% endfor %}
+</div>
+{% endblock %}

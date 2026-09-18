@@ -1,0 +1,148 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>{{ event.title }} | EGUP</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="{{ event.title }} | EGUP">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" with active="events" %}
+<main id="main">
+  <section class="page-hero">
+    <div class="page-hero__image">{% if event.image %}<img src="{{ event.image.file.url }}" alt="" loading="eager">{% endif %}</div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/events.html">Events</a><span aria-hidden="true">/</span><span>{{ event.title }}</span></nav>
+      <h1>{{ event.title }}</h1>
+      <p>{{ event.starts_at|date:"j M Y, g:i A" }}{% if event.location %} &middot; {{ event.location }}{% endif %}</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container" style="max-width:760px;">
+      <div class="prose">{{ event.description|linebreaks }}</div>
+      <div class="mt-4" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        {% if event.registration_url %}<a href="{{ event.registration_url }}" class="btn btn--primary">Register for this event</a>{% endif %}
+        <button type="button" class="btn btn--ghost-navy" data-share-event data-share-title="{{ event.title }}">Share this event</button>
+      </div>
+    </div>
+  </section>
+
+  {% if event.requires_ticket %}
+  <section class="section section--alt" data-ticket-section data-event-slug="{{ event.slug }}">
+    <div class="container" style="max-width:640px;">
+      <p class="eyebrow">Tickets</p>
+      <h2 class="section-title" style="font-size:var(--step-3);">Book your ticket</h2>
+
+      {% if event.is_sold_out %}
+        <p class="payment-status payment-status--error">This event is fully booked, no tickets remain.</p>
+      {% else %}
+        <p class="payment-status payment-status--info" data-ticket-status-message></p>
+
+        <form data-ticket-form class="stack mt-5">
+          <div class="form-field"><label for="tk-name">Full name</label><input id="tk-name" name="full_name" type="text" required></div>
+          <div class="form-field"><label for="tk-email">Email <span class="hint">(optional)</span></label><input id="tk-email" name="email" type="email"></div>
+          <div class="form-field"><label for="tk-phone">Phone number</label><input id="tk-phone" name="phone" type="tel" required placeholder="0712345678"></div>
+          <div class="form-field"><label for="tk-qty">Number of tickets</label><input id="tk-qty" name="quantity" type="number" min="1" value="1" required></div>
+          <button type="submit" class="btn btn--primary" data-ticket-submit>Continue</button>
+        </form>
+
+        <div data-ticket-payment-choice hidden style="margin-top:1.25rem;">
+          <p class="eyebrow" style="justify-content:center;">Payment options</p>
+          <div class="payment-options-grid">
+            <div class="payment-method-card" data-ticket-automatic-card>
+              <div class="payment-method-card__icon"><i class="bi bi-phone-fill"></i></div>
+              <p class="payment-method-card__title">M-Pesa Express</p>
+              <p class="payment-method-card__subtitle">Automatic STK Push</p>
+              <p class="payment-method-card__amount">KES <span data-ticket-amount>&hellip;</span></p>
+              <p class="payment-method-card__desc">Receive a payment prompt directly on your phone.</p>
+              <span class="payment-method-card__unavailable" data-ticket-automatic-unavailable hidden>Currently unavailable</span>
+              <button type="button" class="btn btn--primary btn--block" data-ticket-choose-automatic>Pay with M-Pesa Express</button>
+            </div>
+            <div class="payment-method-card" data-ticket-manual-card>
+              <div class="payment-method-card__icon"><i class="bi bi-shop"></i></div>
+              <p class="payment-method-card__title">M-Pesa PayBill</p>
+              <p class="payment-method-card__subtitle">Manual payment</p>
+              <p class="payment-method-card__amount">KES <span data-ticket-amount>&hellip;</span></p>
+              <p class="payment-method-card__desc">Pay via PayBill, then submit your transaction code.</p>
+              <span class="payment-method-card__unavailable" data-ticket-manual-unavailable hidden>Currently unavailable</span>
+              <button type="button" class="btn btn--ghost-navy btn--block" data-ticket-choose-manual>Pay via PayBill</button>
+            </div>
+          </div>
+        </div>
+
+        <div data-ticket-automatic-phone-panel hidden style="margin-top:1.25rem;">
+          <div class="card" style="padding:1.25rem;background:var(--color-bg-alt);">
+            <p style="margin:0;font-weight:700;">Confirm the M-Pesa number to pay with</p>
+          </div>
+          <form data-ticket-automatic-phone-form class="stack mt-4">
+            <div class="form-field"><label for="tk-auto-phone">M-Pesa phone number</label><input id="tk-auto-phone" type="tel" required></div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" class="btn btn--ghost-navy" data-ticket-automatic-back>&larr; Back</button>
+              <button type="submit" class="btn btn--primary">Send payment request</button>
+            </div>
+          </form>
+        </div>
+
+        <div data-ticket-manual-panel hidden style="margin-top:1.25rem;">
+          <div class="card" style="padding:1.25rem;background:var(--color-bg-alt);">
+            <p class="manual-instructions__row"><strong>PayBill:</strong> <span data-ticket-manual-paybill></span></p>
+            <p><strong>Account:</strong> <span data-ticket-manual-account></span></p>
+            <p><strong>Amount:</strong> KES <span data-ticket-manual-amount></span></p>
+          </div>
+          <form data-ticket-manual-form class="stack mt-4" enctype="multipart/form-data">
+            <div class="form-field"><label for="tk-code">M-Pesa transaction code</label><input id="tk-code" name="transaction_code" type="text" required></div>
+            <div class="form-field"><label for="tk-mphone">Phone number used to pay</label><input id="tk-mphone" name="phone_number_used" type="tel" required></div>
+            <div class="form-field"><label for="tk-mamount">Amount paid (KES)</label><input id="tk-mamount" name="amount_submitted" type="number" required></div>
+            <div class="form-field"><label for="tk-mdate">Payment date</label><input id="tk-mdate" name="payment_date" type="date" required></div>
+            <div class="form-field"><label for="tk-mscreenshot">Payment screenshot <span class="hint">(optional unless required)</span></label><input id="tk-mscreenshot" name="screenshot" type="file" accept="image/*"></div>
+            <div style="display:flex;gap:10px;">
+              <button type="button" class="btn btn--ghost-navy" data-ticket-manual-back>&larr; Back</button>
+              <button type="submit" class="btn btn--primary">Submit for verification</button>
+            </div>
+          </form>
+        </div>
+
+        <div data-ticket-confirmation hidden style="margin-top:1.25rem;text-align:center;">
+          <div class="card" style="padding:2rem;">
+            <i class="bi bi-check-circle-fill" style="font-size:2.5rem;color:var(--color-green);"></i>
+            <p style="font-weight:700;margin-top:0.75rem;" data-ticket-confirmation-title></p>
+            <p style="color:var(--color-body);">Reference: <strong data-ticket-reference></strong></p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+</main>
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+{% if event.requires_ticket and not event.is_sold_out %}
+<script type="module" src="{% static 'js/event-ticket.js' %}"></script>
+{% endif %}
+<script>
+(function () {
+  var btn = document.querySelector('[data-share-event]');
+  if (!btn) return;
+  btn.addEventListener('click', async function () {
+    var shareData = { title: btn.dataset.shareTitle, url: window.location.href };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch (e) { /* user cancelled, fine */ }
+    } else {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        var original = btn.textContent;
+        btn.textContent = 'Link copied!';
+        setTimeout(function () { btn.textContent = original; }, 2000);
+      } catch (e) {
+        window.prompt('Copy this link:', window.location.href);
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

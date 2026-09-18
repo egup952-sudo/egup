@@ -1,0 +1,31 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | EGUP</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="{% static 'css/variables.css' %}">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/components.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin-extra.css' %}">
+<style>
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(155deg,#0b1a2a 0%,#16324f 100%); }
+  .login-card { background:#fff; border-radius:16px; padding:2.5rem 2.25rem; width:100%; max-width:380px; box-shadow:0 20px 60px rgba(0,0,0,0.3); }
+  .login-card img { height:44px; display:block; margin:0 auto 1.25rem; }
+  .login-card h1 { text-align:center; font-size:1.25rem; margin:0 0 1.5rem; color:#0f172a; }
+</style>
+</head>
+<body>
+<div class="login-card">
+  <img src="{% static 'images/logo-navy.png' %}" alt="EGUP">
+  <h1>Admin Sign In</h1>
+  {% if error %}<div class="field-error" style="margin-bottom:1rem;">{{ error }}</div>{% endif %}
+  <form method="post" class="stack">
+    {% csrf_token %}
+    <div class="form-field"><label for="username">Username</label><input type="text" id="username" name="username" required autofocus></div>
+    <div class="form-field"><label for="password">Password</label><input type="password" id="password" name="password" required></div>
+    <button type="submit" class="btn btn--primary" style="width:100%;">Sign in</button>
+  </form>
+</div>
+</body>
+</html>

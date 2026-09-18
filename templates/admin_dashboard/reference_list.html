@@ -1,0 +1,26 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}{{ label }}s{% endblock %}
+{% block heading %}Reference data{% endblock %}
+{% block crumb %}Reference Data{% endblock %}
+{% block content %}
+<div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+  {% for k, entry in registry.items %}
+    <a href="{% url 'members_admin:reference_list' kind=k %}" class="btn {% if k == kind %}btn--primary{% else %}btn--ghost-navy{% endif %}" style="padding:6px 14px;font-size:0.85rem;">{{ entry.1 }}</a>
+  {% endfor %}
+</div>
+<a href="{% url 'members_admin:reference_create' kind=kind %}" class="btn btn--primary" style="margin-bottom:1rem;display:inline-block;">+ Add {{ label }}</a>
+<table class="table">
+  <thead><tr><th>Name</th><th></th></tr></thead>
+  <tbody>
+  {% for item in items %}
+    <tr>
+      <td>{{ item }}</td>
+      <td>
+        <a href="{% url 'members_admin:reference_edit' kind=kind pk=item.pk %}">Edit</a>
+        <form method="post" action="{% url 'members_admin:reference_delete' kind=kind pk=item.pk %}" style="display:inline;" onsubmit="return confirm('Delete this entry?');">{% csrf_token %}<button type="submit" style="background:none;border:none;color:#b42318;cursor:pointer;margin-left:8px;">Delete</button></form>
+      </td>
+    </tr>
+  {% empty %}<tr><td colspan="2">No {{ label|lower }}s yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

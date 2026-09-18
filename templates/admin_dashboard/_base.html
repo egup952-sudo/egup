@@ -1,0 +1,117 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Dashboard{% endblock %} | EGUP Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="{% static 'css/variables.css' %}">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/components.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin-extra.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
+{% block extra_head %}{% endblock %}
+</head>
+<body class="admin-body">
+
+<div class="admin-sidebar-backdrop" data-sidebar-backdrop></div>
+
+<aside class="admin-sidebar" data-admin-sidebar>
+  <div class="admin-sidebar__brand">
+    <img src="{% static 'images/logo-white.png' %}" alt="EGUP">
+    <div><strong>EGUP</strong><span>Admin Dashboard</span></div>
+  </div>
+
+  <nav class="admin-nav">
+    <a href="{% url 'accounts:dashboard_home' %}" class="admin-nav__link {% if active == 'dashboard' %}is-active{% endif %}"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+
+    <p class="admin-nav__label">Membership</p>
+    <a href="{% url 'members_admin:list' %}" class="admin-nav__link {% if active == 'members' %}is-active{% endif %}"><i class="bi bi-people-fill"></i> Members</a>
+    <a href="{% url 'members_admin:reference_list' kind='churches' %}" class="admin-nav__link {% if active == 'churches' %}is-active{% endif %}"><i class="bi bi-building"></i> Churches</a>
+    <a href="{% url 'members_admin:reference_list' kind='professions' %}" class="admin-nav__link {% if active == 'professions' %}is-active{% endif %}"><i class="bi bi-briefcase-fill"></i> Professions</a>
+    <a href="{% url 'members_admin:reference_list' kind='skills' %}" class="admin-nav__link {% if active == 'skills' %}is-active{% endif %}"><i class="bi bi-stars"></i> Skills</a>
+    <a href="{% url 'members_admin:reference_list' kind='departments' %}" class="admin-nav__link {% if active == 'departments' %}is-active{% endif %}"><i class="bi bi-diagram-3-fill"></i> Departments</a>
+
+    <p class="admin-nav__label">Finance</p>
+    <a href="{% url 'payments_admin:list' %}" class="admin-nav__link {% if active == 'payments' %}is-active{% endif %}"><i class="bi bi-credit-card-fill"></i> Payments</a>
+    <a href="{% url 'payments_admin:manual_verification_queue' %}" class="admin-nav__link {% if active == 'manual_verification' %}is-active{% endif %}"><i class="bi bi-patch-check-fill"></i> Manual Verification</a>
+    <a href="{% url 'payments_admin:settings' %}" class="admin-nav__link {% if active == 'payment_settings' %}is-active{% endif %}"><i class="bi bi-sliders"></i> Payment Settings</a>
+    <a href="{% url 'payments_admin:credentials' %}" class="admin-nav__link {% if active == 'credentials' %}is-active{% endif %}"><i class="bi bi-key-fill"></i> Payment Credentials</a>
+
+    <p class="admin-nav__label">Content</p>
+    <a href="{% url 'content_admin:site_settings' %}" class="admin-nav__link {% if active == 'site_settings' %}is-active{% endif %}"><i class="bi bi-house-gear-fill"></i> Homepage &amp; Contact</a>
+    <a href="{% url 'content_admin:hero_list' %}" class="admin-nav__link {% if active == 'hero' %}is-active{% endif %}"><i class="bi bi-image-fill"></i> Hero Slides</a>
+    <a href="{% url 'content_admin:social_link_list' %}" class="admin-nav__link {% if active == 'social_links' %}is-active{% endif %}"><i class="bi bi-share-fill"></i> Social Links</a>
+    <a href="{% url 'events_admin:list' %}" class="admin-nav__link {% if active == 'events' %}is-active{% endif %}"><i class="bi bi-calendar-event-fill"></i> Events</a>
+    <a href="{% url 'announcements_admin:list' %}" class="admin-nav__link {% if active == 'announcements' %}is-active{% endif %}"><i class="bi bi-megaphone-fill"></i> Announcements</a>
+    <a href="{% url 'media_lib_admin:gallery' %}" class="admin-nav__link {% if active == 'gallery' %}is-active{% endif %}"><i class="bi bi-images"></i> Gallery</a>
+    <a href="{% url 'content_admin:page_list' %}" class="admin-nav__link {% if active == 'pages' %}is-active{% endif %}"><i class="bi bi-file-earmark-text-fill"></i> Pages</a>
+
+    <p class="admin-nav__label">Communication</p>
+    <a href="{% url 'content_admin:message_list' %}" class="admin-nav__link {% if active == 'messages' %}is-active{% endif %}">
+      <i class="bi bi-envelope-fill"></i> Messages
+      {% if topbar_unread_messages %}<span class="admin-nav__badge">{{ topbar_unread_messages }}</span>{% endif %}
+    </a>
+
+    <p class="admin-nav__label">System</p>
+    <a href="{% url 'accounts:admin_list' %}" class="admin-nav__link {% if active == 'admins' %}is-active{% endif %}"><i class="bi bi-person-badge-fill"></i> Admin Users</a>
+    <a href="{% url 'audit_admin:list' %}" class="admin-nav__link {% if active == 'audit' %}is-active{% endif %}"><i class="bi bi-clock-history"></i> Audit Logs</a>
+  </nav>
+
+  {% if current_admin_profile %}
+  <div class="admin-sidebar__user">
+    <div class="admin-sidebar__avatar">{{ request.user.username|slice:":1"|upper }}</div>
+    <div>
+      <strong>{{ request.user.username }}</strong>
+      <span>{{ current_admin_profile.role.name|title }}</span>
+    </div>
+  </div>
+  {% endif %}
+</aside>
+
+<div class="admin-shell">
+  <header class="admin-topbar">
+    <button class="admin-topbar__burger" data-sidebar-toggle aria-label="Toggle menu"><i class="bi bi-list"></i></button>
+    <div>
+      <h1>{% block heading %}Dashboard{% endblock %}</h1>
+      <p class="admin-topbar__crumb">EGUP Admin / {% block crumb %}{% endblock %}</p>
+    </div>
+    <div class="admin-topbar__spacer"></div>
+    <form class="admin-topbar__search" role="search" method="get" action="{% url 'accounts:search' %}">
+      <i class="bi bi-search"></i>
+      <input type="text" name="q" placeholder="Search members, payments, events..." value="{{ request.GET.q }}" aria-label="Search">
+      <span class="admin-topbar__search-kbd">CTRL+K</span>
+    </form>
+    <a href="{% url 'accounts:search' %}" class="admin-topbar__search-mobile-link" aria-label="Search"><i class="bi bi-search"></i></a>
+
+    <a href="{% url 'payments_admin:manual_verification_queue' %}" class="admin-topbar__icon-btn" aria-label="Notifications" title="Payments needing attention">
+      <i class="bi bi-bell-fill"></i>
+      {% if topbar_notification_count %}<span class="admin-topbar__badge">{{ topbar_notification_count }}</span>{% endif %}
+    </a>
+    <a href="{% url 'content_admin:message_list' %}" class="admin-topbar__icon-btn" aria-label="Messages" title="Contact messages">
+      <i class="bi bi-envelope-fill"></i>
+      {% if topbar_unread_messages %}<span class="admin-topbar__badge">{{ topbar_unread_messages }}</span>{% endif %}
+    </a>
+
+    <form method="post" action="{% url 'accounts:dashboard_logout' %}" class="admin-topbar__logout">{% csrf_token %}<button type="submit" title="Log out"><i class="bi bi-box-arrow-right"></i></button></form>
+  </header>
+
+  <main class="admin-main">
+    {% if messages %}{% for message in messages %}<div class="alert alert--{{ message.tags }}">{{ message }}</div>{% endfor %}{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script>
+(function () {
+  var sidebar = document.querySelector('[data-admin-sidebar]');
+  var backdrop = document.querySelector('[data-sidebar-backdrop]');
+  var toggle = document.querySelector('[data-sidebar-toggle]');
+  function close() { sidebar.classList.remove('is-open'); backdrop.classList.remove('is-open'); }
+  function open() { sidebar.classList.add('is-open'); backdrop.classList.add('is-open'); }
+  toggle.addEventListener('click', function () { sidebar.classList.contains('is-open') ? close() : open(); });
+  backdrop.addEventListener('click', close);
+})();
+</script>
+</body>
+</html>

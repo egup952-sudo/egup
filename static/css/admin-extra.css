@@ -1,0 +1,163 @@
+/* Small additions for admin dashboard + form rendering not covered by the
+   ported public-site stylesheets. Deliberately minimal — does not
+   redesign anything, only fills gaps (brief section 15: admin can't touch
+   design, but the dashboard itself still needs to be usable). */
+
+/* CRITICAL FIX: several base stylesheet rules (.card, .lightbox, etc.)
+   set an explicit `display` value (flex/grid). The HTML `hidden`
+   attribute is implemented via a low-specificity UA stylesheet rule
+   `[hidden]{display:none}` — any author class rule with the SAME
+   specificity that also sets `display` wins the cascade over it, which
+   silently breaks `hidden` on every element carrying that class
+   (registration wizard steps, renewal panels, the gallery lightbox all
+   hit this). This single rule guarantees `hidden` always wins, globally,
+   regardless of what any other stylesheet sets. */
+[hidden] { display: none !important; }
+
+.form-field { margin-bottom: 1rem; }
+.form-field label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+.form-field input, .form-field select, .form-field textarea {
+  width: 100%; padding: 0.6rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;
+}
+.field-error { color: #b42318; font-size: 0.9rem; margin-top: 0.25rem; }
+.alert { padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 0.75rem; }
+.alert--error { background: #fee4e2; color: #b42318; }
+.alert--success { background: #dcfce7; color: #166534; }
+.table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.table th, .table td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid #e5e7eb; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.gallery-grid img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+.gallery-grid figure { margin: 0; }
+/* FIX: browser default `figure{margin:1em 40px}` was never reset — on a
+   single-column mobile layout those 40px side margins read as large,
+   seemingly broken empty gutters next to every photo. */
+@media (max-width: 640px) {
+  .gallery-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+}
+
+/* Public-site gallery (gallery.html + home.html's gallery-highlights
+   section) — separate from the admin dashboard's .gallery-grid above by
+   design. Square aspect-ratio tiles instead of a fixed px height, so
+   every tile is genuinely uniform regardless of the source photo's own
+   dimensions, and an explicit 2-column mobile layout (not 1) so it
+   doesn't read as oversized/empty on a phone. */
+.public-gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.public-gallery-grid figure { margin: 0; position: relative; overflow: hidden; border-radius: 10px; }
+.public-gallery-grid img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 10px; display: block; transition: transform 500ms var(--ease, ease); }
+.public-gallery-grid figure:hover img, .public-gallery-grid figure:focus-within img { transform: scale(1.08); }
+.public-gallery-grid figcaption {
+  position: absolute; inset: auto 0 0 0;
+  background: linear-gradient(0deg, rgba(11,26,42,0.75), transparent);
+  color: var(--color-on-navy); font-size: 0.72rem; padding: 8px 8px 6px; border-radius: 0 0 10px 10px;
+}
+/* Zoom-in cue shown on hover even when a photo has no caption, so
+   every tile still feels interactive, not just the ones an admin
+   happened to caption. */
+.gallery-hover-icon {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(11,26,42,0);
+  color: #fff; font-size: 1.6rem;
+  opacity: 0;
+  transition: opacity 250ms ease, background 250ms ease;
+  pointer-events: none;
+}
+.public-gallery-grid figure:hover .gallery-hover-icon,
+.public-gallery-grid figure:focus-within .gallery-hover-icon {
+  opacity: 1;
+  background: rgba(11,26,42,0.28);
+}
+/* First row (visible on load) reveals with a slight cascade rather
+   than all popping in at once; rows further down trigger naturally
+   as each figure's own .reveal enters the viewport while scrolling. */
+.public-gallery-grid figure.reveal:nth-child(1) { transition-delay: 0ms; }
+.public-gallery-grid figure.reveal:nth-child(2) { transition-delay: 90ms; }
+.public-gallery-grid figure.reveal:nth-child(3) { transition-delay: 180ms; }
+@media (max-width: 720px) {
+  .public-gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
+
+/* ── Print (registration/renewal confirmation) ──────────────
+   Real print styles for the "Print confirmation" button on the
+   registration/renewal success panels — hides navigation, footer, and
+   anything not part of the confirmation itself, so what prints is a
+   clean single card, not the whole page chrome. */
+@media print {
+  .site-header, .site-footer, .to-top, .nav-toggle,
+  .reg-progress, .btn, [data-payment-method-choice],
+  script { display: none !important; }
+  main { padding-top: 0 !important; }
+  body { background: #fff !important; }
+  .confirm-panel { box-shadow: none !important; border: 1px solid #ccc; }
+}
+
+/* ── FAQ accordion ─────────────────────────────────────────── */
+.faq-item { border-bottom: 1px solid var(--color-hairline); }
+.faq-item summary {
+  cursor: pointer; padding: 1rem 0; font-weight: 700; list-style: none;
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: "+"; font-size: 1.3rem; font-weight: 400; color: var(--color-gold); transition: transform 0.2s ease; }
+.faq-item[open] summary::after { transform: rotate(45deg); }
+.faq-item p { padding: 0 0 1rem; color: var(--color-body); margin: 0; }
+
+/* ── Event countdown ───────────────────────────────────────── */
+.countdown { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.countdown__unit { text-align: center; min-width: 64px; }
+.countdown__number { font-size: 1.8rem; font-weight: 800; }
+.countdown__label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8; }
+
+/* ── Image fade-in on load (opt-in via class, not a blanket rule —
+   applying this to ALL [loading="lazy"] images would leave any image JS
+   doesn't reach permanently invisible) ────────────────────── */
+img.fade-img { opacity: 0; transition: opacity 400ms ease; }
+img.fade-img.is-loaded { opacity: 1; }
+
+/* ── Copy-to-clipboard buttons (payment PayBill/Account) ────── */
+.copy-btn {
+  font-size: 0.72rem; font-weight: 700; padding: 2px 10px; margin-left: 6px;
+  border: 1px solid var(--color-gold); color: var(--color-gold-deep);
+  background: transparent; border-radius: 999px; cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.copy-btn:hover { background: var(--color-gold); color: #fff; }
+
+/* ── Payment method selection cards (registration/renewal) ────
+   Two side-by-side cards (stack on mobile): icon, title, subtitle,
+   amount, description, then its own CTA button — not the whole card
+   as one button, so a disabled/unavailable card can still show its
+   content clearly without looking clickable. ──── */
+.payment-options-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+@media (max-width: 640px) {
+  .payment-options-grid { grid-template-columns: 1fr; }
+}
+.payment-method-card {
+  display: flex; flex-direction: column; gap: 10px; text-align: left;
+  padding: 1.5rem; border: 1px solid var(--color-hairline);
+  border-radius: 10px; background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.payment-method-card:not(.is-disabled):hover,
+.payment-method-card.is-selected {
+  border-color: var(--color-gold);
+  box-shadow: 0 4px 14px rgba(184,134,11,0.12);
+}
+.payment-method-card__icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-navy); color: var(--color-gold-soft);
+  font-size: 1.2rem;
+}
+.payment-method-card__title { font-family: var(--font-display); font-size: 1.15rem; color: var(--color-navy-deep); margin: 0; }
+.payment-method-card__subtitle { font-size: 0.85rem; color: var(--color-gold-deep); font-weight: 700; margin: 0; }
+.payment-method-card__amount { font-size: 1.6rem; font-weight: 800; color: var(--color-navy-deep); margin: 4px 0; }
+.payment-method-card__desc { font-size: 0.88rem; color: var(--color-body); flex: 1; margin: 0; }
+.payment-method-card__unavailable {
+  display: inline-block; font-size: 0.76rem; font-weight: 700; color: #92700c;
+  background: rgba(234,179,8,0.14); padding: 2px 10px; border-radius: 999px; margin: 4px 0;
+}
+.payment-method-card.is-disabled { background: var(--color-bg-alt); opacity: 0.75; }
+.payment-method-card.is-disabled .payment-method-card__icon { background: var(--color-hairline); color: var(--color-body); }

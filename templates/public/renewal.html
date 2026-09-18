@@ -1,0 +1,149 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>Renew Your Membership | EGUP</title>
+<meta name="description" content="Renew your EGUP membership for KES 100. Enter your member number or phone number to find your account and pay securely via M-Pesa.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="Renew Your Membership | EGUP">
+<meta property="og:description" content="Renew your EGUP membership for KES 100. Enter your member number or phone number to find your account and pay securely via M-Pesa.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" %}
+
+<main id="main">
+
+  <section class="page-hero">
+    <div class="page-hero__image">
+      <img src="{% static 'images/gallery/fellowship-youth.jpg' %}" alt="" loading="eager">
+    </div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span><span>Renew Membership</span>
+      </nav>
+      <p class="eyebrow on-navy">Already a member?</p>
+      <h1>Renew your membership</h1>
+      <p>Membership runs for one year. Renewing costs <strong>KES 100</strong>, paid securely via M-Pesa. New to EGUP? <a class="text-link text-link--on-navy" href="/registration.html">Register instead &rarr;</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" style="max-width:560px;">
+
+      <!-- LOOKUP -->
+      <div data-renewal-lookup-panel>
+        <form id="renewal-lookup-form" class="card" style="padding: var(--space-6);">
+          <p class="eyebrow">Find your membership</p>
+          <h2 style="font-size: var(--step-2);margin-top:8px;">Enter your details</h2>
+          <div class="form-field"><label for="rn-number">Member number <span class="hint">(e.g. EGUP-2026-000123)</span></label><input id="rn-number" name="member_number" type="text"></div>
+          <p style="text-align:center;color:var(--color-body);font-size:var(--step--1);margin:12px 0;">&mdash; or &mdash;</p>
+          <div class="form-field"><label for="rn-phone">Phone number</label><input id="rn-phone" name="phone" type="tel" placeholder="0712345678"></div>
+
+          <button type="submit" class="btn btn--solid-navy btn--block mt-5">Find my membership</button>
+          <p class="form-status" data-renewal-lookup-status></p>
+        </form>
+      </div>
+
+      <!-- OTP VERIFICATION — a membership number alone isn't proof of
+           identity, so before anything else we confirm the requester
+           actually controls the phone on file. -->
+      <div data-renewal-otp-panel hidden class="card" style="padding: var(--space-6);">
+        <p class="eyebrow">Verify it's you</p>
+        <h2 style="font-size: var(--step-2);margin-top:8px;">Enter the code we sent you</h2>
+        <p style="color:var(--color-body);font-size:var(--step--1);">If that membership exists, we've sent a 6-digit code by SMS to the phone number on file. It expires in 5 minutes.</p>
+        <form data-renewal-otp-form>
+          <div class="form-field"><label for="rn-otp-code">Verification code</label><input id="rn-otp-code" name="code" type="text" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required></div>
+          <div style="display:flex;gap:10px;margin-top:1rem;">
+            <button type="button" class="btn btn--ghost-navy" data-renewal-otp-back>&larr; Back</button>
+            <button type="submit" class="btn btn--solid-navy">Verify code</button>
+          </div>
+          <p class="form-status" data-renewal-otp-status></p>
+        </form>
+      </div>
+
+      <div data-renewal-method-choice hidden class="card" style="padding: var(--space-6);display:flex;flex-direction:column;gap:10px;">
+        <p style="font-size:var(--step--1);color:var(--color-body);margin:0;">How would you like to pay?</p>
+        <button type="button" class="payment-method-card" data-renewal-choose-automatic>
+          <strong>M-Pesa Express</strong>
+          <span>Receive a payment prompt on your phone.</span>
+        </button>
+        <button type="button" class="payment-method-card" data-renewal-choose-manual>
+          <strong>Pay via M-Pesa PayBill</strong>
+          <span>Already paid? Submit your transaction details for verification.</span>
+        </button>
+      </div>
+
+      <!-- CONFIRM -->
+      <div data-renewal-confirm-panel hidden class="card" style="padding: var(--space-6);">
+        <p class="eyebrow">Confirm your renewal</p>
+        <h2 style="font-size: var(--step-2);margin-top:8px;" data-renewal-name>,</h2>
+        <dl class="review-list mt-4">
+          <dt>Member number</dt><dd data-renewal-number>,</dd>
+          <dt>Current expiry</dt><dd data-renewal-current-expiry>,</dd>
+          <dt>Renewal fee</dt><dd data-renewal-amount>,</dd>
+        </dl>
+        <div style="display:flex;justify-content:space-between;margin-top: var(--space-6);">
+          <button type="button" class="btn btn--ghost-navy" data-renewal-cancel>&larr; Back</button>
+          <button type="button" class="btn btn--primary" data-renewal-pay>Renew &amp; Pay &rarr;</button>
+        </div>
+      </div>
+
+      <!-- PAYMENT -->
+      <div data-renewal-payment-panel hidden class="card" style="padding: var(--space-6); text-align:center;">
+        <p class="eyebrow" style="justify-content:center;">Payment</p>
+        <div class="payment-spinner" data-renewal-spinner hidden></div>
+        <p class="payment-status payment-status--info" data-renewal-payment-status role="status" aria-live="polite">Preparing your renewal&hellip;</p>
+      </div>
+
+      <!-- MANUAL PAYMENT -->
+      <div data-renewal-manual-panel hidden class="card" style="padding: var(--space-6); text-align:left;">
+        <p class="eyebrow">Application <span data-renewal-manual-application-number>,</span></p>
+        <p style="margin:0.5rem 0;">Pay via M-Pesa, then enter your transaction code below.</p>
+        <p data-renewal-manual-paybill-row hidden><strong>PayBill:</strong> <span data-renewal-manual-paybill></span> <button type="button" class="copy-btn" data-copy-target="data-renewal-manual-paybill">Copy</button></p>
+        <p data-renewal-manual-till-row hidden><strong>Till:</strong> <span data-renewal-manual-till></span> <button type="button" class="copy-btn" data-copy-target="data-renewal-manual-till">Copy</button></p>
+        <p><strong>Account:</strong> <span data-renewal-manual-account-note></span> <button type="button" class="copy-btn" data-copy-target="data-renewal-manual-account-note">Copy</button></p>
+
+        <form data-renewal-manual-form class="stack mt-4" enctype="multipart/form-data">
+          <div class="form-field"><label for="rmp-code">M-Pesa transaction code</label><input id="rmp-code" name="transaction_code" type="text" required placeholder="e.g. QJI7XXXXXX"></div>
+          <div class="form-field"><label for="rmp-phone">Phone number used to pay</label><input id="rmp-phone" name="phone_number_used" type="tel" required placeholder="0712345678"></div>
+          <div class="form-field"><label for="rmp-amount">Amount paid (KES)</label><input id="rmp-amount" name="amount_submitted" type="number" required></div>
+          <div class="form-field"><label for="rmp-date">Payment date</label><input id="rmp-date" name="payment_date" type="date" required></div>
+          <div class="form-field"><label for="rmp-screenshot">Payment screenshot <span class="hint">(optional unless required)</span></label><input id="rmp-screenshot" name="screenshot" type="file" accept="image/*"></div>
+          <p class="payment-status" data-renewal-manual-submit-status role="status" aria-live="polite"></p>
+          <button type="submit" class="btn btn--primary">Submit payment for verification</button>
+        </form>
+      </div>
+
+      <!-- PENDING VERIFICATION -->
+      <div data-renewal-pending-panel hidden class="card confirm-panel" style="padding: var(--space-7);">
+        <p class="eyebrow" style="justify-content:center;">Almost there</p>
+        <h2 style="font-size: var(--step-3);">Payment submitted</h2>
+        <p style="color:var(--color-body);">Your payment is awaiting verification. We'll confirm your renewal once it's checked against our M-Pesa records.</p>
+        <p style="font-size:var(--step--1);color:var(--color-body);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-top: var(--space-5);">Application Number</p>
+        <p class="confirm-panel__number" data-renewal-pending-application-number style="font-size: var(--step-3);">,</p>
+        <a href="/" class="btn btn--ghost-navy mt-6">Return home</a>
+      </div>
+
+      <!-- DONE -->
+      <div data-renewal-done-panel hidden class="card confirm-panel" style="padding: var(--space-7);">
+        <p class="eyebrow" style="justify-content:center;">Renewal successful</p>
+        <h2 style="font-size: var(--step-3);">Your membership is renewed</h2>
+        <p style="font-size:var(--step--1);color:var(--color-body);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;margin-top: var(--space-5);">New expiry date</p>
+        <p class="confirm-panel__number" data-renewal-new-expiry style="font-size: var(--step-3);">,</p>
+        <a href="/" class="btn btn--ghost-navy mt-6">Return home</a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+<script type="module" src="{% static 'js/renewal.js' %}"></script>
+</body>
+</html>

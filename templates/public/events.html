@@ -1,0 +1,102 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>Events | EGUP Fellowship, Outreach &amp; Prayer Calendar</title>
+<meta name="description" content="See upcoming EGUP events including the Annual Fellowship, gospel outreach drives, prayer walks and worship gatherings, plus a look back at past events.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="Events | EGUP Fellowship, Outreach &amp; Prayer Calendar">
+<meta property="og:description" content="See upcoming EGUP events including the Annual Fellowship, gospel outreach drives, prayer walks and worship gatherings, plus a look back at past events.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" with active="events" %}
+
+<main id="main">
+
+  <section class="page-hero">
+    <div class="page-hero__image">
+      <img src="{% static 'images/gallery/prayer-walk-street.jpg' %}" alt="" loading="eager">
+    </div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span><span>Events</span>
+      </nav>
+      <p class="eyebrow on-navy">Where and when to join us</p>
+      <h1>Events</h1>
+      <p>From the Annual Fellowship to street outreach and early-morning prayer walks, find out what's next, and where we've already been.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="pill-toggle" data-events-toggle role="tablist" aria-label="Filter events">
+        <button class="is-active" data-target="upcoming" role="tab" aria-selected="true">Upcoming</button>
+        <button data-target="past" role="tab" aria-selected="false">Past</button>
+      </div>
+
+      <div class="grid grid-3 mt-6" data-panel="upcoming">
+        {% for event in upcoming_events %}
+          <a href="/events/{{ event.slug }}.html" class="card">
+            {% if event.image %}<img src="{{ event.image.file.url }}" alt="{{ event.image.alt_text }}">{% endif %}
+            {% if event.requires_ticket %}
+              {% if event.is_sold_out %}<span class="card__badge card__badge--sold-out">Sold out</span>
+              {% else %}<span class="card__badge">{% if event.ticket_price_kes %}Tickets KES {{ event.ticket_price_kes }}{% else %}Free ticket{% endif %}</span>{% endif %}
+            {% endif %}
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.starts_at|date:"j M Y, g:i A" }}{% if event.location %} &middot; {{ event.location }}{% endif %}</p>
+          </a>
+        {% endfor %}
+      </div>
+      {% if not upcoming_events %}
+        <p class="state-msg mt-4">There are no upcoming events listed right now, check back soon, or see our <a class="text-link" href="/announcements.html">latest announcements</a>.</p>
+      {% endif %}
+
+      <div class="grid grid-3 mt-6" data-panel="past" hidden>
+        {% for event in past_events %}
+          <a href="/events/{{ event.slug }}.html" class="card">
+            {% if event.image %}<img src="{{ event.image.file.url }}" alt="{{ event.image.alt_text }}">{% endif %}
+            <h3>{{ event.title }}</h3>
+            <p>{{ event.starts_at|date:"j M Y" }}{% if event.location %} &middot; {{ event.location }}{% endif %}</p>
+          </a>
+        {% endfor %}
+      </div>
+      {% if not past_events %}
+        <p class="state-msg mt-4" data-empty-past hidden>No past events have been recorded yet.</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="section section--gold">
+    <div class="container cta-band">
+      <div class="reveal">
+        <p class="eyebrow">Don't want to miss a date</p>
+        <h2 style="color:var(--color-navy-deep);">Register your interest today</h2>
+      </div>
+      <div class="reveal">
+        <a href="/registration.html" class="btn btn--solid-navy">Register Now</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+<script>
+(function () {
+  var toggle = document.querySelector('[data-events-toggle]');
+  if (!toggle) return;
+  toggle.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-target]');
+    if (!btn) return;
+    toggle.querySelectorAll('button').forEach(function (b) { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-selected', b === btn ? 'true' : 'false'); });
+    document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== btn.dataset.target; });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>Membership Registration | EGUP</title>
+<meta name="description" content="Register as an official EGUP member. Complete your details, choose your skills and department, and pay the KES 200 registration fee securely via M-Pesa.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="Membership Registration | EGUP">
+<meta property="og:description" content="Register as an official EGUP member. Complete your details, choose your skills and department, and pay the KES 200 registration fee securely via M-Pesa.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" with active="registration" %}
+
+<main id="main">
+
+  <section class="page-hero">
+    <div class="page-hero__image">
+      <img src="{% static 'images/gallery/volunteer-team.jpg' %}" alt="" loading="eager">
+    </div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span><span>Membership Registration</span>
+      </nav>
+      <p class="eyebrow on-navy">Become an official EGUP member</p>
+      <h1>Membership Registration</h1>
+      <p>Complete your details below. Registration costs a one-time fee of <strong>KES 200</strong>, paid securely via M-Pesa, and your membership is valid for one year. Already a member? <a class="text-link text-link--on-navy" href="/renewal.html">Renew your membership instead &rarr;</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container reg-wizard">
+
+      <div class="reg-progress">
+        <span class="reg-progress__item" data-step="1">Personal</span>
+        <span class="reg-progress__item" data-step="2">Profession &amp; Skills</span>
+        <span class="reg-progress__item" data-step="3">Referee</span>
+        <span class="reg-progress__item" data-step="4">Review</span>
+        <span class="reg-progress__item" data-step="5">Payment</span>
+        <span class="reg-progress__item" data-step="6">Complete</span>
+      </div>
+
+      <!-- STEP 1: PERSONAL -->
+      <div class="reg-step card" data-step="1">
+        <p class="eyebrow">Step 1 of 6</p>
+        <h2 style="font-size: var(--step-3);">Personal information</h2>
+        <form id="reg-step-1" class="mt-4">
+          <div class="form-row form-row--2">
+            <div class="form-field"><label for="f-surname">Surname</label><input id="f-surname" name="surname" type="text" required></div>
+            <div class="form-field"><label for="f-other-names">Other names</label><input id="f-other-names" name="other_names" type="text" required></div>
+          </div>
+          <div class="form-row form-row--2">
+            <div class="form-field"><label for="f-phone">Phone number</label><input id="f-phone" name="phone" type="tel" placeholder="0712345678" required></div>
+            <div class="form-field"><label for="f-email">Email <span class="hint">(optional)</span></label><input id="f-email" name="email" type="email"></div>
+          </div>
+          <div class="form-row form-row--2">
+            <div class="form-field">
+              <label for="f-gender">Gender</label>
+              <select id="f-gender" name="gender" required>
+                <option value="" disabled selected>Select gender</option>
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+              </select>
+            </div>
+            <div class="form-field"><label for="f-county">County</label><select id="f-county" name="county_id" required></select></div>
+          </div>
+          <div class="form-row form-row--2">
+            <div class="form-field"><label for="f-location">Location <span class="hint">(optional)</span></label><input id="f-location" name="location" type="text"></div>
+            <div class="form-field"><label for="f-hometown">Home town <span class="hint">(optional)</span></label><input id="f-hometown" name="home_town" type="text"></div>
+          </div>
+          <div class="form-row form-row--2">
+            <div class="form-field"><label for="f-religion">Religion <span class="hint">(optional)</span></label><input id="f-religion" name="religion" type="text"></div>
+            <div class="form-field"><label for="f-church">Church <span class="hint">(optional)</span></label><select id="f-church" name="church_id"></select></div>
+          </div>
+        </form>
+        <div style="display:flex;justify-content:flex-end;margin-top: var(--space-5);">
+          <button type="button" class="btn btn--solid-navy" data-step-1-next>Continue &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: PROFESSION / SKILLS / DEPARTMENTS -->
+      <div class="reg-step card" data-step="2" hidden>
+        <p class="eyebrow">Step 2 of 6</p>
+        <h2 style="font-size: var(--step-3);">Profession, skills &amp; department</h2>
+        <form id="reg-step-2" class="mt-4">
+          <div class="form-row form-row--2">
+            <div class="form-field"><label for="f-profession">Profession <span class="hint">(optional)</span></label><select id="f-profession" name="profession_id"></select></div>
+            <div class="form-field"><label for="f-experience">Experience <span class="hint">(optional)</span></label><input id="f-experience" name="experience" type="text" placeholder="e.g. 5 years teaching"></div>
+          </div>
+          <div class="form-field"><label for="f-gift">Spiritual gift <span class="hint">(optional)</span></label><input id="f-gift" name="gift" type="text"></div>
+          <div class="form-field">
+            <label>Skills <span class="hint">(select all that apply)</span></label>
+            <div class="checklist" data-skills-list></div>
+          </div>
+          <div class="form-field">
+            <label>Department in EGUP <span class="hint">(select all that apply)</span></label>
+            <div class="checklist" data-departments-list></div>
+          </div>
+        </form>
+        <div style="display:flex;justify-content:space-between;margin-top: var(--space-5);">
+          <button type="button" class="btn btn--ghost-navy" data-step-2-back>&larr; Back</button>
+          <button type="button" class="btn btn--solid-navy" data-step-2-next>Continue &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: REFEREE -->
+      <div class="reg-step card" data-step="3" hidden>
+        <p class="eyebrow">Step 3 of 6</p>
+        <h2 style="font-size: var(--step-3);">Referee / next of kin</h2>
+        <p class="section-lede" style="margin-top:8px;">A point of contact who can vouch for you, a family member, pastor, or someone in your community.</p>
+        <form id="reg-step-3" class="mt-4">
+          <div class="form-field"><label for="f-ref-name">Referee name <span class="hint">(optional)</span></label><input id="f-ref-name" name="referee_name" type="text"></div>
+          <div class="form-row form-row--2">
+            <div class="form-field"><label for="f-ref-phone">Referee phone <span class="hint">(optional)</span></label><input id="f-ref-phone" name="referee_phone" type="tel"></div>
+            <div class="form-field"><label for="f-ref-location">Referee location <span class="hint">(optional)</span></label><input id="f-ref-location" name="referee_location" type="text"></div>
+          </div>
+        </form>
+        <div style="display:flex;justify-content:space-between;margin-top: var(--space-5);">
+          <button type="button" class="btn btn--ghost-navy" data-step-3-back>&larr; Back</button>
+          <button type="button" class="btn btn--solid-navy" data-step-3-next>Review my details &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: REVIEW -->
+      <div class="reg-step card" data-step="4" hidden>
+        <p class="eyebrow">Step 4 of 6</p>
+        <h2 style="font-size: var(--step-3);">Review your information</h2>
+        <p class="section-lede" style="margin-top:8px;">Please check everything is correct before you pay.</p>
+        <div class="mt-4" data-review-output></div>
+        <div style="display:flex;justify-content:space-between;margin-top: var(--space-5);">
+          <button type="button" class="btn btn--ghost-navy" data-step-4-back>&larr; Back and edit</button>
+          <button type="button" class="btn btn--primary" data-step-4-next>Register &amp; Pay KES <span data-fee-amount>200</span> &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: PAYMENT -->
+      <div class="reg-step card reg-step--centered" data-step="5" hidden>
+        <p class="eyebrow" style="justify-content:center;">Step 5 of 6</p>
+        <h2 style="font-size: var(--step-3);">Payment</h2>
+        <p class="section-lede" style="margin-inline:auto;max-width:480px;">Your registration details have been reviewed. Choose your preferred payment method to complete your registration.</p>
+        <div class="mt-5" style="max-width:640px;margin-inline:auto;">
+
+          <div class="payment-spinner" data-payment-spinner hidden></div>
+          <p class="payment-status payment-status--info" data-payment-status-message role="status" aria-live="polite">Preparing your registration&hellip;</p>
+          <button type="button" class="btn btn--solid-navy" data-payment-retry hidden>Try payment again</button>
+
+          <!-- Payment method choice — both cards are ALWAYS shown once
+               payment modes are known, even if one is unavailable, so
+               the applicant explicitly picks rather than being silently
+               routed to whichever one happens to be configured. -->
+          <div data-payment-method-choice hidden style="text-align:left;margin-top:1.25rem;">
+            <p class="eyebrow" style="justify-content:center;">Payment options</p>
+            <div class="payment-options-grid">
+              <div class="payment-method-card" data-automatic-card>
+                <div class="payment-method-card__icon"><i class="bi bi-phone-fill"></i></div>
+                <p class="payment-method-card__title">M-Pesa Express</p>
+                <p class="payment-method-card__subtitle">Automatic STK Push</p>
+                <p class="payment-method-card__amount">KES <span data-fee-amount>&hellip;</span></p>
+                <p class="payment-method-card__desc">Enter your M-Pesa phone number and receive a payment prompt directly on your phone.</p>
+                <span class="payment-method-card__unavailable" data-automatic-unavailable-label hidden>Currently unavailable</span>
+                <button type="button" class="btn btn--primary btn--block" data-choose-automatic>Pay with M-Pesa Express</button>
+              </div>
+              <div class="payment-method-card" data-manual-card>
+                <div class="payment-method-card__icon"><i class="bi bi-shop"></i></div>
+                <p class="payment-method-card__title">M-Pesa PayBill</p>
+                <p class="payment-method-card__subtitle">Manual payment</p>
+                <p class="payment-method-card__amount">KES <span data-fee-amount>&hellip;</span></p>
+                <p class="payment-method-card__desc">Pay using the EGUP PayBill details, then submit your M-Pesa transaction code for verification.</p>
+                <span class="payment-method-card__unavailable" data-manual-unavailable-label hidden>Currently unavailable</span>
+                <button type="button" class="btn btn--ghost-navy btn--block" data-choose-manual>Pay via PayBill</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Automatic path: confirm/edit the M-Pesa phone number
+               before anything is sent — never auto-fire the STK push
+               using whatever was typed in Step 1 without a chance to
+               correct it (e.g. paying from a parent's phone). -->
+          <div data-automatic-phone-panel hidden style="text-align:left;margin-top:1.25rem;">
+            <div class="card" style="padding:1.25rem;background:var(--color-bg-alt);">
+              <p style="margin:0;font-weight:700;">Confirm the M-Pesa number to pay with</p>
+              <p style="margin:0.3rem 0 0;font-size:var(--step--1);color:var(--color-body);">This will also be saved as your registered contact number.</p>
+            </div>
+            <form data-automatic-phone-form class="stack mt-4">
+              <div class="form-field"><label for="mp-auto-phone">M-Pesa phone number</label><input id="mp-auto-phone" name="automatic_phone" type="tel" required placeholder="0712345678"></div>
+              <p class="payment-status" data-automatic-phone-status role="status" aria-live="polite"></p>
+              <div style="display:flex;gap:10px;">
+                <button type="button" class="btn btn--ghost-navy" data-automatic-phone-back>&larr; Back</button>
+                <button type="submit" class="btn btn--primary">Send payment request</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Manual payment instructions + submission form -->
+          <div data-manual-payment-panel hidden style="text-align:left;margin-top:1.25rem;">
+            <div class="card" style="padding:1.25rem;background:var(--color-bg-alt);">
+              <p class="eyebrow">Application <span data-manual-application-number>,</span></p>
+              <p class="manual-instructions__row"><strong>PayBill:</strong> <span data-manual-paybill></span> <button type="button" class="copy-btn" data-copy-target="data-manual-paybill">Copy</button></p>
+              <p class="manual-instructions__row" hidden><strong>Till:</strong> <span data-manual-till></span> <button type="button" class="copy-btn" data-copy-target="data-manual-till">Copy</button></p>
+              <p><strong>Account:</strong> <span data-manual-account-note></span> <button type="button" class="copy-btn" data-copy-target="data-manual-account-note">Copy</button></p>
+              <p><strong>Amount:</strong> KES <span data-manual-amount></span></p>
+              <p data-manual-extra-instructions style="color:var(--color-body);font-size:var(--step--1);"></p>
+              <ol style="margin:0.75rem 0 0;padding-left:1.2rem;font-size:var(--step--1);color:var(--color-body);">
+                <li>Open M-Pesa on your phone.</li>
+                <li>Select <em>Lipa na M-Pesa</em>, then <em>Pay Bill</em>.</li>
+                <li>Enter the PayBill and account/reference shown above.</li>
+                <li>Enter the amount shown above and complete the payment.</li>
+                <li>Return here and enter your M-Pesa transaction code below.</li>
+              </ol>
+            </div>
+
+            <form data-manual-payment-form class="stack mt-4" enctype="multipart/form-data">
+              <div class="form-field"><label for="mp-code">M-Pesa transaction code</label><input id="mp-code" name="transaction_code" type="text" required placeholder="e.g. QJI7XXXXXX"></div>
+              <div class="form-field"><label for="mp-phone">Phone number used to pay</label><input id="mp-phone" name="phone_number_used" type="tel" required placeholder="0712345678"></div>
+              <div class="form-field"><label for="mp-amount">Amount paid (KES)</label><input id="mp-amount" name="amount_submitted" type="number" required></div>
+              <div class="form-field"><label for="mp-date">Payment date</label><input id="mp-date" name="payment_date" type="date" required></div>
+              <div class="form-field"><label for="mp-screenshot">Payment screenshot <span class="hint">(optional unless required)</span></label><input id="mp-screenshot" name="screenshot" type="file" accept="image/*"></div>
+              <p class="payment-status" data-manual-submit-status role="status" aria-live="polite"></p>
+              <div style="display:flex;gap:10px;">
+                <button type="button" class="btn btn--ghost-navy" data-manual-back>&larr; Back</button>
+                <button type="submit" class="btn btn--primary">Submit payment for verification</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- STEP 6: CONFIRMATION -->
+      <div class="reg-step card confirm-panel reg-step--wide-pad" data-step="6" hidden>
+
+        <div data-confirm-paid-content>
+          <p class="eyebrow" style="justify-content:center;">You're in!</p>
+          <h2 style="font-size: var(--step-4);">Welcome to EGUP</h2>
+          <p class="section-lede" style="margin-inline:auto;">Your membership has been created. Keep your member number safe, you'll use it to renew each year.</p>
+          <p class="mt-5" style="font-size:var(--step--1);color:var(--color-body);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Member Number</p>
+          <p class="confirm-panel__number" data-confirm-member-number>,</p>
+          <div class="grid grid-2 mt-5" style="max-width:420px;margin-inline:auto;text-align:left;">
+            <div><p style="font-size:var(--step--1);color:var(--color-body);">Registration date</p><p style="font-weight:700;" data-confirm-date>,</p></div>
+            <div><p style="font-size:var(--step--1);color:var(--color-body);">Membership expires</p><p style="font-weight:700;" data-confirm-expiry>,</p></div>
+          </div>
+          <div class="mt-6" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <button type="button" class="btn btn--solid-navy" data-confirm-print>Print confirmation</button>
+            <a href="/" class="btn btn--ghost-navy">Return home</a>
+          </div>
+        </div>
+
+        <div data-confirm-pending-verification hidden>
+          <p class="eyebrow" style="justify-content:center;">Almost there</p>
+          <h2 style="font-size: var(--step-4);">Payment submitted</h2>
+          <p class="section-lede" style="margin-inline:auto;">Your payment is awaiting verification by EGUP. We'll confirm your membership once it's checked against our M-Pesa records, this is usually quick.</p>
+          <p class="mt-5" style="font-size:var(--step--1);color:var(--color-body);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">Application Number</p>
+          <p class="confirm-panel__number" data-confirm-application-number>,</p>
+          <p class="mt-4" style="color:var(--color-body);">Keep this number, you can quote it if you contact EGUP about your registration.</p>
+          <div class="mt-6"><a href="/" class="btn btn--ghost-navy">Return home</a></div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section section--alt">
+    <div class="container" style="max-width:720px;">
+      <p class="eyebrow">Common questions</p>
+      <h2 class="section-title">Registration FAQ</h2>
+      <div class="mt-5">
+        <details class="faq-item">
+          <summary>How much does registration cost, and what does it cover?</summary>
+          <p>Registration is a one-time fee shown on this page, valid for one year of membership. It covers your place in the EGUP fellowship and access to member updates and events throughout the year.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What's the difference between the two payment options?</summary>
+          <p>Paying with M-Pesa (automatic) sends a payment prompt straight to your phone and confirms instantly once you enter your PIN. Paying manually means you pay via our PayBill/Till yourself, then enter your M-Pesa transaction code here, an EGUP admin checks it against our records, which usually only takes a short while.</p>
+        </details>
+        <details class="faq-item">
+          <summary>I paid manually: how long until I'm confirmed?</summary>
+          <p>Manual payments are checked against our M-Pesa records by an admin, not confirmed automatically. You'll see your application number on the confirmation screen, keep it in case you need to follow up.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Do I get a physical membership card?</summary>
+          <p>No, your membership number is your identifier with EGUP. There's no physical card to carry or lose.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What happens when my membership expires?</summary>
+          <p>You can renew any time from the <a class="text-link" href="/renewal.html" style="display:inline-flex;">renewal page</a> using your membership number and phone number.</p>
+        </details>
+        <details class="faq-item">
+          <summary>I made a mistake in my details: can I fix it?</summary>
+          <p><a href="/contact.html" class="text-link" style="display:inline-flex;">Contact us</a> with your application or membership number and we'll help sort it out.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+<script type="module" src="{% static 'js/membership-registration.js' %}"></script>
+</body>
+</html>

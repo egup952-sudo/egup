@@ -1,0 +1,23 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Add Member{% endblock %}
+{% block heading %}Add Member{% endblock %}
+{% block crumb %}Members / Add{% endblock %}
+{% block content %}
+<div class="alert" style="background:#eff6ff;color:#1e40af;max-width:640px;">
+  This creates a member directly, without going through the online payment flow ,
+  for walk-ins, corrections, or anyone who paid outside the website (e.g. cash at an event).
+  The membership granted here is recorded as an admin grant in their history, same as any renewal.
+</div>
+<form method="post" class="stack" style="max-width:640px;">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="form-field">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+      {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn--primary">Create member</button>
+</form>
+{% endblock %}

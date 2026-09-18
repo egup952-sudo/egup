@@ -1,0 +1,65 @@
+{% load static %}<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="brand__badge brand__badge--lg"><img src="{% static 'images/logo-white.png' %}" alt="EGUP logo" width="461" height="358"></span>
+        <p>Establishment, God Revealing Himself, Understanding His Word, Positioning Ourselves, an annual fellowship and outreach program of Bless A Soul Family Church.</p>
+      </div>
+      <div>
+        <p class="footer-heading">Explore</p>
+        <div class="footer-links">
+          <a href="/about.html">About EGUP</a>
+          <a href="/programs.html">Programs</a>
+          <a href="/events.html">Events</a>
+          <a href="/gallery.html">Gallery</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-heading">Get Involved</p>
+        <div class="footer-links">
+          <a href="/registration.html">Register</a>
+          <a href="/renewal.html">Renew Membership</a>
+          <a href="/how-to-pay.html">How to Pay</a>
+          <a href="/announcements.html">Announcements</a>
+          <a href="/contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-heading">Contact</p>
+        <div class="footer-links">
+          <span>Lenana, Narok Town, Kenya</span>
+          <a href="mailto:egupa@gmail.com">egupa@gmail.com</a>
+          <a href="tel:+254725077288">+254 725 077 288</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span data-current-year>2026</span> EGUP, a ministry of Bless A Soul Family Church.</span>
+      <div class="social-links" aria-label="Social media">
+        {% for link in social_links %}
+          <a href="{{ link.url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ link.platform }}">
+            {% with p=link.platform|lower %}
+              {% if "facebook" in p %}<i class="bi bi-facebook"></i>
+              {% elif "instagram" in p %}<i class="bi bi-instagram"></i>
+              {% elif "twitter" in p or " x" in p or p == "x" %}<i class="bi bi-twitter-x"></i>
+              {% elif "youtube" in p %}<i class="bi bi-youtube"></i>
+              {% elif "tiktok" in p %}<i class="bi bi-tiktok"></i>
+              {% elif "whatsapp" in p %}<i class="bi bi-whatsapp"></i>
+              {% elif "linkedin" in p %}<i class="bi bi-linkedin"></i>
+              {% elif "telegram" in p %}<i class="bi bi-telegram"></i>
+              {% else %}<i class="bi bi-link-45deg"></i>
+              {% endif %}
+            {% endwith %}
+          </a>
+        {% endfor %}
+      </div>
+      <span>Spreading Christ Through Outreaches</span>
+    </div>
+    <div class="footer-bottom" style="border-top:none;padding-top:0;">
+      <span><a href="/privacy.html">Privacy Policy</a> &middot; <a href="/terms.html">Terms of Use</a></span>
+      <span><a href="#" target="_blank" rel="noopener noreferrer">Dameih Hub</a></span>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" aria-label="Back to top">&uarr;</button>

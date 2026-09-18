@@ -1,0 +1,100 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>Gallery | EGUP Photos from Fellowship &amp; Outreach</title>
+<meta name="description" content="Browse photos from EGUP's annual fellowships, gospel outreach missions, prayer walks and worship gatherings.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="Gallery | EGUP Photos from Fellowship &amp; Outreach">
+<meta property="og:description" content="Browse photos from EGUP's annual fellowships, gospel outreach missions, prayer walks and worship gatherings.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" with active="gallery" %}
+
+<main id="main">
+  <section class="page-hero">
+    <div class="page-hero__image"><img src="{% static 'images/gallery/outreach-team.jpg' %}" alt="" loading="eager"></div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Gallery</span></nav>
+      <p class="eyebrow on-navy">From the field</p>
+      <h1>Gallery</h1>
+      <p>Moments from EGUP's fellowships, outreach missions, prayer walks and worship gatherings.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="public-gallery-grid" data-gallery-grid>
+        {% for img in images %}
+          <figure class="reveal" data-lightbox-trigger data-full="{{ img.file.url }}" data-alt="{{ img.alt_text }}">
+            <img src="{{ img.file.url }}" alt="{{ img.alt_text }}" loading="lazy" class="fade-img">
+            <span class="gallery-hover-icon" aria-hidden="true"><i class="bi bi-zoom-in"></i></span>
+            {% if img.caption %}<figcaption>{{ img.caption }}</figcaption>{% endif %}
+          </figure>
+        {% empty %}
+          <p class="state-msg">No photos published yet, check back soon.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</main>
+
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+<script>
+(function () {
+  var triggers = Array.prototype.slice.call(document.querySelectorAll('[data-lightbox-trigger]'));
+  if (!triggers.length) return;
+
+  var box = document.createElement('div');
+  box.className = 'lightbox'; box.hidden = true;
+  box.innerHTML =
+    '<button class="lightbox__nav lightbox__nav--prev" aria-label="Previous photo"><i class="bi bi-chevron-left"></i></button>' +
+    '<img alt="">' +
+    '<button class="lightbox__nav lightbox__nav--next" aria-label="Next photo"><i class="bi bi-chevron-right"></i></button>' +
+    '<button class="lightbox__close" aria-label="Close">&times;</button>';
+  document.body.appendChild(box);
+
+  var img = box.querySelector('img');
+  var current = 0;
+
+  function show(index) {
+    current = (index + triggers.length) % triggers.length;
+    var t = triggers[current];
+    img.src = t.dataset.full; img.alt = t.dataset.alt || '';
+  }
+  function open(index) {
+    show(index);
+    box.hidden = false;
+    // Force layout so the opacity/scale transition actually plays,
+    // rather than jumping straight to the open state.
+    void box.offsetWidth;
+    box.classList.add('is-open');
+  }
+  function close() {
+    box.classList.remove('is-open');
+    setTimeout(function () { box.hidden = true; }, 220);
+  }
+
+  triggers.forEach(function (t, i) {
+    t.style.cursor = 'zoom-in';
+    t.addEventListener('click', function () { open(i); });
+  });
+  box.querySelector('.lightbox__close').addEventListener('click', close);
+  box.querySelector('.lightbox__nav--prev').addEventListener('click', function (e) { e.stopPropagation(); show(current - 1); });
+  box.querySelector('.lightbox__nav--next').addEventListener('click', function (e) { e.stopPropagation(); show(current + 1); });
+  box.addEventListener('click', function (e) { if (e.target === box) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (box.hidden) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(current - 1);
+    if (e.key === 'ArrowRight') show(current + 1);
+  });
+})();
+</script>
+</body>
+</html>

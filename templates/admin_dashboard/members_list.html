@@ -1,0 +1,22 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Members{% endblock %}
+{% block heading %}Members{% endblock %}
+{% block crumb %}Members{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;margin-bottom:1rem;">
+  <form method="get" style="display:flex;gap:8px;">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search by name, phone, or membership number">
+    <button type="submit" class="btn btn--ghost-navy">Search</button>
+  </form>
+  <a href="{% url 'members_admin:export' %}" class="btn btn--ghost-navy">Export CSV</a>
+  <a href="{% url 'members_admin:create' %}" class="btn btn--primary" style="margin-left:8px;">+ Add Member</a>
+</div>
+<table class="table">
+  <thead><tr><th>Membership #</th><th>Name</th><th>Phone</th><th>County</th><th>Active</th><th>Joined</th></tr></thead>
+  <tbody>
+  {% for m in members %}
+    <tr><td><a href="{% url 'members_admin:detail' m.pk %}">{{ m.membership_number }}</a></td><td>{{ m.full_name }}</td><td>{{ m.phone_number }}</td><td>{{ m.county }}</td><td>{% if m.is_active %}Yes{% else %}No{% endif %}</td><td>{{ m.created_at|date:"j M Y" }}</td></tr>
+  {% empty %}<tr><td colspan="6">No members yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

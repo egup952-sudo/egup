@@ -1,0 +1,54 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>How to Pay | EGUP</title>
+<meta name="description" content="How to pay your EGUP registration or renewal fee, automatic M-Pesa prompt or manual PayBill payment.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="How to Pay | EGUP">
+<meta property="og:description" content="How to pay your EGUP registration or renewal fee, automatic M-Pesa prompt or manual PayBill payment.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" %}
+
+<main id="main" class="main--header-offset">
+  <section class="section">
+    <div class="container" style="max-width:680px;">
+      <p class="eyebrow">Support</p>
+      <h1 class="section-title">How to pay</h1>
+      <p class="section-lede">EGUP membership can be paid two ways. Both are checked before your membership is confirmed, nothing is marked paid without EGUP verifying it first.</p>
+
+      {% if automatic_available %}
+      <div class="card mt-6" style="padding:1.5rem;">
+        <h3 style="margin-top:0;">M-Pesa Express (automatic)</h3>
+        <p>When you register or renew, choose "Pay with M-Pesa" and a payment prompt is sent straight to your phone. Enter your M-Pesa PIN and your payment is confirmed automatically.</p>
+      </div>
+      {% endif %}
+
+      {% if manual_available %}
+      <div class="card mt-4" style="padding:1.5rem;">
+        <h3 style="margin-top:0;">Pay via M-Pesa PayBill (manual)</h3>
+        <p>Go to M-Pesa on your phone, choose Lipa na M-Pesa &rarr; Pay Bill, and enter:</p>
+        <p class="mt-3"><strong>PayBill:</strong> <span id="htp-paybill">{{ settings.manual_payment_paybill }}</span> <button type="button" class="copy-btn" data-copy-target="#htp-paybill">Copy</button></p>
+        {% if settings.manual_payment_till %}<p><strong>Till:</strong> <span id="htp-till">{{ settings.manual_payment_till }}</span> <button type="button" class="copy-btn" data-copy-target="#htp-till">Copy</button></p>{% endif %}
+        <p><strong>Account:</strong> <span id="htp-account">{{ settings.manual_payment_account_note }}</span> <button type="button" class="copy-btn" data-copy-target="#htp-account">Copy</button></p>
+        <p class="mt-3">After paying, come back to your registration or renewal page and enter your M-Pesa transaction code. An EGUP administrator checks it against our records, you'll see "awaiting verification" until it's confirmed.</p>
+      </div>
+      {% endif %}
+
+      <div class="mt-6" style="text-align:center;">
+        <a href="/registration.html" class="btn btn--primary">Register now</a>
+        <a href="/renewal.html" class="btn btn--ghost-navy">Renew membership</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

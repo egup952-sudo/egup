@@ -1,0 +1,67 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Search{% endblock %}
+{% block heading %}Search results{% if query %} for "{{ query }}"{% endif %}{% endblock %}
+{% block crumb %}Search{% endblock %}
+{% block content %}
+
+<form method="get" action="{% url 'accounts:search' %}" style="display:flex;gap:8px;margin-bottom:1.5rem;max-width:480px;">
+  <input type="text" name="q" value="{{ query }}" placeholder="Search members, payments, events, announcements..." style="flex:1;">
+  <button type="submit" class="btn btn--ghost-navy">Search</button>
+</form>
+
+{% if not query %}
+  <p class="state-msg">Enter a search term above. Members, payments, events and announcements are all searched at once.</p>
+{% elif not results.members and not results.payments and not results.events and not results.announcements %}
+  <p class="state-msg">No results found for "{{ query }}".</p>
+{% else %}
+
+  {% if results.members %}
+  <h2 class="section-title">Members ({{ results.members|length }})</h2>
+  <table class="table">
+    <thead><tr><th>Membership #</th><th>Name</th><th>Phone</th><th>County</th></tr></thead>
+    <tbody>
+      {% for m in results.members %}
+        <tr><td><a href="{% url 'members_admin:detail' m.pk %}">{{ m.membership_number }}</a></td><td>{{ m.full_name }}</td><td>{{ m.phone_number }}</td><td>{{ m.county }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if results.payments %}
+  <h2 class="section-title">Payments ({{ results.payments|length }})</h2>
+  <table class="table">
+    <thead><tr><th>Application #</th><th>Purpose</th><th>Amount</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for p in results.payments %}
+        <tr><td><a href="{% url 'payments_admin:detail' p.pk %}">{{ p.application_number }}</a></td><td>{{ p.get_purpose_display }}</td><td>KES {{ p.amount_kes }}</td><td>{{ p.get_status_display }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if results.events %}
+  <h2 class="section-title">Events ({{ results.events|length }})</h2>
+  <table class="table">
+    <thead><tr><th>Title</th><th>Starts</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for e in results.events %}
+        <tr><td><a href="{% url 'events_admin:edit' e.pk %}">{{ e.title }}</a></td><td>{{ e.starts_at|date:"j M Y" }}</td><td>{{ e.get_status_display }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if results.announcements %}
+  <h2 class="section-title">Announcements ({{ results.announcements|length }})</h2>
+  <table class="table">
+    <thead><tr><th>Title</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for a in results.announcements %}
+        <tr><td><a href="{% url 'announcements_admin:edit' a.pk %}">{{ a.title }}</a></td><td>{{ a.get_status_display }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+{% endif %}
+{% endblock %}

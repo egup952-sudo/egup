@@ -1,0 +1,126 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>Programs | EGUP Ministry Initiatives</title>
+<meta name="description" content="Explore EGUP's programs: the Annual Fellowship, Gospel Outreach, Prayer Walks, Worship Gatherings, Evangelism Missions, Community Ministry, Bible Teaching and Youth Programs.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="Programs | EGUP Ministry Initiatives">
+<meta property="og:description" content="Explore EGUP's programs: the Annual Fellowship, Gospel Outreach, Prayer Walks, Worship Gatherings, Evangelism Missions, Community Ministry, Bible Teaching and Youth Programs.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" with active="programs" %}
+
+<main id="main">
+
+  <section class="page-hero">
+    <div class="page-hero__image">
+      <img src="{% static 'images/gallery/dance-ministry.jpg' %}" alt="" loading="eager">
+    </div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span><span>Programs</span>
+      </nav>
+      <p class="eyebrow on-navy">How faith becomes action</p>
+      <h1>Programs</h1>
+      <p>Eight ministry initiatives that carry EGUP's vision into churches, streets and communities throughout the year.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p class="body-lg" style="max-width: 68ch;">Each EGUP program exists to serve one of our ministry areas, evangelism, prayer, worship, teaching, drama and dance, community outreach and youth ministry. Together they form a full rhythm of fellowship and mission across the year, building up to the Annual Fellowship itself.</p>
+
+      <nav class="program-nav" aria-label="Jump to a program">
+        <a href="#program-1"><span>01</span> Annual Fellowship</a>
+        <a href="#program-2"><span>02</span> Gospel Outreach</a>
+        <a href="#program-3"><span>03</span> Prayer Walks</a>
+        <a href="#program-4"><span>04</span> Worship Gatherings</a>
+        <a href="#program-5"><span>05</span> Evangelism Missions</a>
+        <a href="#program-6"><span>06</span> Community Ministry</a>
+        <a href="#program-7"><span>07</span> Bible Teaching</a>
+        <a href="#program-8"><span>08</span> Youth Programs</a>
+      </nav>
+
+      <div class="program-row" id="program-1">
+        <div class="program-row__figure">
+          <span class="program-row__badge"><i class="bi bi-calendar-heart-fill"></i></span>
+          <img src="{% static 'images/hero/hero-outreach-crowd-800.jpg' %}" alt="A large crowd gathered for the EGUP annual fellowship" loading="lazy" width="800" height="600">
+        </div>
+        <div><p class="program-row__num">Program 01</p><h3>Annual Fellowship</h3><p>The centrepiece of EGUP's calendar, a full day bringing together churches, institutions, youth and believers from across the region for worship, teaching and unity around that year's theme.</p></div>
+      </div>
+      <div class="program-row is-reverse" id="program-2">
+        <div class="program-row__figure">
+          <span class="program-row__badge"><i class="bi bi-megaphone-fill"></i></span>
+          <img src="{% static 'images/hero/hero-street-outreach-800.jpg' %}" alt="Believers carrying out a gospel outreach through the streets of town" loading="lazy" width="800" height="600">
+        </div>
+        <div><p class="program-row__num">Program 02</p><h3>Gospel Outreach</h3><p>Organised outreach drives into neighbourhoods, markets and public spaces, carrying the Gospel directly to people where they are.</p></div>
+      </div>
+      <div class="program-row" id="program-3">
+        <div class="program-row__figure">
+          <span class="program-row__badge"><i class="bi bi-signpost-split-fill"></i></span>
+          <img src="{% static 'images/gallery/prayer-walk-crowd-800.jpg' %}" alt="A crowd of believers walking together in prayer" loading="lazy" width="800" height="600">
+        </div>
+        <div><p class="program-row__num">Program 03</p><h3>Prayer Walks</h3><p>Early-morning walks through town and neighbouring areas, praying over homes, schools, businesses and institutions along the way.</p></div>
+      </div>
+      <div class="program-row is-reverse" id="program-4">
+        <div class="program-row__figure">
+          <span class="program-row__badge"><i class="bi bi-music-note-beamed"></i></span>
+          <img src="{% static 'images/gallery/worship-praise-team-800.jpg' %}" alt="A worship team leading praise and worship" loading="lazy" width="800" height="600">
+        </div>
+        <div><p class="program-row__num">Program 04</p><h3>Worship Gatherings</h3><p>Dedicated evenings of praise and worship, creating space for God to reveal Himself among His people outside of the main annual event.</p></div>
+      </div>
+      <div class="program-row" id="program-5">
+        <div class="program-row__figure">
+          <span class="program-row__badge"><i class="bi bi-send-fill"></i></span>
+          <img src="{% static 'images/gallery/outreach-team-800.jpg' %}" alt="An evangelism mission team preparing to go out" loading="lazy" width="800" height="600">
+        </div>
+        <div><p class="program-row__num">Program 05</p><h3>Evangelism Missions</h3><p>Focused, short-term missions sending trained teams into specific communities to share the Gospel and follow up with new believers.</p></div>
+      </div>
+      <div class="program-row is-reverse" id="program-6">
+        <div class="program-row__figure">
+          <span class="program-row__badge"><i class="bi bi-heart-fill"></i></span>
+          <img src="{% static 'images/gallery/volunteer-team-800.jpg' %}" alt="A volunteer team serving the community" loading="lazy" width="800" height="600">
+        </div>
+        <div><p class="program-row__num">Program 06</p><h3>Community Ministry</h3><p>Practical service to the wider community, a tangible expression of the Gospel through acts of care, support and presence.</p></div>
+      </div>
+      <div class="program-row" id="program-7">
+        <div class="program-row__figure">
+          <span class="program-row__badge"><i class="bi bi-book-half"></i></span>
+          <img src="{% static 'images/gallery/fellowship-youth-800.jpg' %}" alt="Believers gathered for Bible teaching" loading="lazy" width="800" height="600">
+        </div>
+        <div><p class="program-row__num">Program 07</p><h3>Bible Teaching</h3><p>Structured teaching sessions that ground believers in Scripture, helping them understand and apply God's Word with confidence.</p></div>
+      </div>
+      <div class="program-row is-reverse" id="program-8">
+        <div class="program-row__figure">
+          <span class="program-row__badge"><i class="bi bi-stars"></i></span>
+          <img src="{% static 'images/gallery/youth-gathering-800.jpg' %}" alt="A group of young people at an EGUP youth program" loading="lazy" width="800" height="600">
+        </div>
+        <div><p class="program-row__num">Program 08</p><h3>Youth Programs</h3><p>Dedicated gatherings and activities that disciple young people and position the next generation for lifelong ministry.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--gold">
+    <div class="container cta-band">
+      <div class="reveal">
+        <p class="eyebrow">Take part</p>
+        <h2 style="color:var(--color-navy-deep);">Which program calls to you?</h2>
+      </div>
+      <div class="reveal" style="display:flex; gap: var(--space-3); flex-wrap: wrap;">
+        <a href="/events.html" class="btn btn--solid-navy">See Upcoming Events</a>
+        <a href="/registration.html" class="btn btn--ghost-navy">Volunteer</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

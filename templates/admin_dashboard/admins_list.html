@@ -1,0 +1,25 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Admin Users{% endblock %}
+{% block heading %}Admin Users{% endblock %}
+{% block crumb %}Admin Users{% endblock %}
+{% block content %}
+<a href="{% url 'accounts:admin_create' %}" class="btn btn--primary" style="margin-bottom:1rem;display:inline-block;">+ New Admin</a>
+<table class="table">
+  <thead><tr><th>Username</th><th>Role</th><th>Active</th><th>2FA</th><th></th></tr></thead>
+  <tbody>
+  {% for p in profiles %}
+    <tr>
+      <td>{{ p.user.username }}</td><td>{{ p.role.name }}</td>
+      <td>{% if p.is_active %}Yes{% else %}No{% endif %}</td>
+      <td>{% if p.two_factor_enabled %}Yes{% else %}No{% endif %}</td>
+      <td>
+        <a href="{% url 'accounts:admin_edit' p.pk %}">Edit</a>
+        {% if p.is_active %}
+        <form method="post" action="{% url 'accounts:admin_deactivate' p.pk %}" style="display:inline;" onsubmit="return confirm('Deactivate this admin account?');">{% csrf_token %}<button type="submit" style="background:none;border:none;color:#b42318;cursor:pointer;margin-left:8px;">Deactivate</button></form>
+        {% endif %}
+      </td>
+    </tr>
+  {% empty %}<tr><td colspan="5">No admin accounts yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

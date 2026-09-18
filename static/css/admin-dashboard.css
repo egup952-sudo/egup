@@ -1,0 +1,277 @@
+/* ===========================================================
+   EGUP Admin Dashboard — layout shell
+   Fixes reported this pass:
+   - Sidebar/topbar were NOT fixed, so they scrolled away with page
+     content (a plain Django admin feel, not a real dashboard app).
+     Both are now `position: fixed` and independent of main-content
+     scroll, exactly like the reference dashboard.
+   - No mobile behaviour existed at all. Sidebar is now off-canvas
+     below 900px, toggled by the topbar hamburger, with a backdrop.
+   =========================================================== */
+
+:root {
+  --admin-sidebar-w: 260px;
+  --admin-topbar-h: 72px;
+  --admin-navy: #0b1a2a;
+  --admin-navy-deep: #071120;
+  --admin-gold: #b8860b;
+  --admin-bg: #f4f6f9;
+  --admin-border: #e5e9ef;
+}
+
+.admin-body { margin: 0; background: var(--admin-bg); font-family: var(--font-body, system-ui, sans-serif); color: #1f2937; }
+
+/* ---- Sidebar ---- */
+.admin-sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: var(--admin-sidebar-w);
+  background: linear-gradient(180deg, var(--admin-navy) 0%, var(--admin-navy-deep) 100%);
+  color: #cbd5e1;
+  display: flex; flex-direction: column;
+  z-index: 40;
+  overflow-y: auto;
+  transition: transform 0.25s ease;
+}
+.admin-sidebar__brand { display: flex; align-items: center; gap: 10px; padding: 1.25rem 1.25rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.admin-sidebar__brand img { height: 30px; width: auto; }
+.admin-sidebar__brand strong { display: block; color: #fff; font-size: 1rem; }
+.admin-sidebar__brand span { display: block; font-size: 0.7rem; color: #94a3b8; letter-spacing: 0.03em; }
+
+.admin-nav { padding: 0.75rem 0.75rem 1rem; flex: 1; }
+.admin-nav__label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin: 1.1rem 0.6rem 0.4rem; font-weight: 700; }
+.admin-nav__link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0.55rem 0.75rem; border-radius: 8px; margin-bottom: 2px;
+  color: #cbd5e1; text-decoration: none; font-size: 0.88rem; font-weight: 500;
+}
+.admin-nav__link i { font-size: 1rem; width: 18px; text-align: center; color: #94a3b8; }
+.admin-nav__link:hover { background: rgba(255,255,255,0.06); color: #fff; }
+.admin-nav__link.is-active { background: var(--admin-gold); color: #1a1204; font-weight: 700; }
+.admin-nav__link.is-active i { color: #1a1204; }
+
+.admin-sidebar__user { display: flex; align-items: center; gap: 10px; padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+.admin-sidebar__avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--admin-gold); color: #1a1204; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; }
+.admin-sidebar__user strong { display: block; color: #fff; font-size: 0.85rem; }
+.admin-sidebar__user span { display: block; font-size: 0.72rem; color: #94a3b8; }
+
+.admin-sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 35; }
+
+/* ---- Shell / topbar ---- */
+.admin-shell { margin-left: var(--admin-sidebar-w); min-height: 100vh; }
+.admin-topbar {
+  position: fixed; top: 0; right: 0; left: var(--admin-sidebar-w);
+  height: var(--admin-topbar-h);
+  background: #fff; border-bottom: 1px solid var(--admin-border);
+  display: flex; align-items: center; gap: 1rem; padding: 0 1.5rem;
+  z-index: 30;
+}
+.admin-topbar h1 { font-size: 1.15rem; margin: 0; color: #0f172a; }
+.admin-topbar__crumb { margin: 0; font-size: 0.78rem; color: #94a3b8; }
+.admin-topbar__spacer { flex: 1; }
+.admin-topbar__burger { display: none; background: none; border: none; font-size: 1.4rem; color: #334155; cursor: pointer; padding: 4px; }
+.admin-topbar__search { display: flex; align-items: center; gap: 8px; background: var(--admin-bg); border-radius: 8px; padding: 0.45rem 0.9rem; color: #94a3b8; }
+.admin-topbar__search input { border: none; background: none; outline: none; font-size: 0.85rem; width: 220px; color: #334155; }
+.admin-topbar__search-kbd { font-size: 0.68rem; font-weight: 700; color: #94a3b8; border: 1px solid var(--admin-border); border-radius: 5px; padding: 1px 6px; background: #fff; }
+.admin-topbar__icon-btn {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 10px;
+  color: #475569; font-size: 1.1rem; text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.admin-topbar__icon-btn:hover { background: var(--admin-bg); color: var(--admin-navy); }
+.admin-topbar__badge {
+  position: absolute; top: 2px; right: 2px;
+  min-width: 16px; height: 16px; padding: 0 3px;
+  border-radius: 999px; background: #ef4444; color: #fff;
+  font-size: 0.62rem; font-weight: 800; line-height: 16px; text-align: center;
+}
+.admin-nav__link { position: relative; }
+.admin-nav__badge {
+  margin-left: auto;
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 999px; background: var(--admin-gold); color: #1a1204;
+  font-size: 0.68rem; font-weight: 800; line-height: 18px; text-align: center;
+}
+.admin-topbar__logout button { background: none; border: none; font-size: 1.2rem; color: #94a3b8; cursor: pointer; padding: 6px; border-radius: 8px; }
+.admin-topbar__logout button:hover { background: var(--admin-bg); color: #b42318; }
+/* Search becomes a plain icon link on mobile instead of vanishing
+   entirely — a functional feature shouldn't be reachable on desktop
+   only. Hidden by default, shown only under the 900px breakpoint above. */
+.admin-topbar__search-mobile-link { display: none; align-items: center; font-size: 1.2rem; color: #94a3b8; padding: 6px; border-radius: 8px; text-decoration: none; }
+.admin-topbar__search-mobile-link:hover { background: var(--admin-bg); color: var(--admin-gold); }
+
+.admin-main { padding: calc(var(--admin-topbar-h) + 1.5rem) 1.75rem 2.5rem; max-width: 1400px; }
+
+/* ---- Quick actions (dashboard home) — colored icon tiles, matching
+   the reference dashboard's look. Each tile keeps its own href/action
+   (real, existing routes) — only the visual treatment changed, a plain
+   outlined link became a colored icon tile. ---- */
+.quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-bottom: 1.75rem; }
+.quick-action {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  background: #fff; border: 1px solid var(--admin-border); border-radius: 12px;
+  padding: 1.1rem 0.5rem; text-decoration: none; color: #334155; font-size: 0.82rem; font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.quick-action:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(15,23,42,0.08); }
+.quick-action__icon {
+  width: 42px; height: 42px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+}
+.quick-action--blue .quick-action__icon { background: rgba(37,99,235,0.12); color: #2563eb; }
+.quick-action--green .quick-action__icon { background: rgba(22,163,74,0.12); color: #16a34a; }
+.quick-action--orange .quick-action__icon { background: rgba(234,88,12,0.12); color: #ea580c; }
+.quick-action--purple .quick-action__icon { background: rgba(147,51,234,0.12); color: #9333ea; }
+.quick-action--navy .quick-action__icon { background: rgba(11,26,42,0.10); color: var(--admin-navy); }
+.quick-action--gold .quick-action__icon { background: rgba(184,134,11,0.14); color: var(--admin-gold); }
+
+/* ---- Stat cards (dashboard home) — icon badge, big number, a real
+   month-over-month trend (omitted rather than faked when there's no
+   prior-month data to compare against), and a tiny sparkline canvas
+   drawn from the same 6-month series backing the main charts. ---- */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.75rem; }
+.stat-card {
+  background: #fff; border-radius: 14px; padding: 1.1rem 1.3rem;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.06); border: 1px solid var(--admin-border);
+}
+.stat-card__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+.stat-card__icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(184,134,11,0.12); color: var(--admin-gold); font-size: 1.05rem; flex-shrink: 0; }
+.stat-card__icon--blue { background: rgba(37,99,235,0.12); color: #2563eb; }
+.stat-card__icon--green { background: rgba(22,163,74,0.12); color: #16a34a; }
+.stat-card__icon--orange { background: rgba(234,88,12,0.12); color: #ea580c; }
+.stat-card__icon--purple { background: rgba(147,51,234,0.12); color: #9333ea; }
+.stat-card__label { margin: 0; font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.03em; font-weight: 700; }
+.stat-card h3 { font-size: 1.65rem; margin: 0.35rem 0 2px; font-weight: 800; color: #0f172a; }
+.stat-card__foot { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-top: 0.4rem; }
+.stat-card__trend { font-size: 0.76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 3px; }
+.stat-card__trend--up { color: #16a34a; }
+.stat-card__trend--down { color: #dc2626; }
+.stat-card__trend--flat { color: #94a3b8; }
+.stat-card__trend-label { color: #94a3b8; font-weight: 500; }
+.stat-card__sparkline { width: 84px; height: 30px; }
+
+/* ---- Chart grid + membership distribution legend ----
+   Two 3-column rows on the dashboard home: Growth chart + Distribution
+   donut + Upcoming events, then Recent payments + Funnel + Quick
+   actions. Same ratio for both so the page reads as one grid system. */
+.chart-grid, .dash-row { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.75rem; }
+.chart-card { background: #fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(15,23,42,0.06); border: 1px solid var(--admin-border); }
+.chart-card__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.chart-card__head h3 { margin: 0; font-size: 0.95rem; color: #0f172a; }
+.chart-card select { border: 1px solid var(--admin-border); border-radius: 8px; padding: 0.35rem 0.6rem; font-size: 0.78rem; color: #334155; background: #fff; }
+
+.distribution { display: flex; flex-direction: column; align-items: center; }
+.distribution__ring { position: relative; width: 168px; height: 168px; margin-bottom: 1.25rem; }
+.distribution__ring canvas { width: 100% !important; height: 100% !important; }
+.distribution__ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+.distribution__ring-center strong { font-size: 1.5rem; color: #0f172a; line-height: 1; }
+.distribution__ring-center span { font-size: 0.72rem; color: #94a3b8; margin-top: 2px; }
+.distribution__legend { width: 100%; display: flex; flex-direction: column; gap: 0.7rem; }
+.distribution__legend-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+.distribution__dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.distribution__legend-row strong { margin-left: auto; color: #0f172a; }
+.distribution__legend-row span.pct { color: #94a3b8; font-size: 0.78rem; min-width: 3.4em; text-align: right; }
+
+/* ---- Upcoming events (dashboard home) ---- */
+.dash-panel { background: #fff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(15,23,42,0.06); border: 1px solid var(--admin-border); }
+.dash-panel__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.dash-panel__head h3 { margin: 0; font-size: 0.95rem; color: #0f172a; }
+.dash-panel__head a { font-size: 0.8rem; font-weight: 700; color: var(--admin-gold); text-decoration: none; }
+.event-row { display: flex; align-items: center; gap: 12px; padding: 0.6rem 0; }
+.event-row + .event-row { border-top: 1px solid var(--admin-border); }
+.event-row__date { flex-shrink: 0; width: 46px; text-align: center; background: var(--admin-bg); border-radius: 8px; padding: 4px 0; }
+.event-row__date strong { display: block; font-size: 0.95rem; color: #0f172a; line-height: 1.1; }
+.event-row__date span { display: block; font-size: 0.62rem; text-transform: uppercase; color: #64748b; font-weight: 700; }
+.event-row__body { flex: 1; min-width: 0; }
+.event-row__body strong { display: block; font-size: 0.86rem; color: #0f172a; }
+.event-row__body span { font-size: 0.76rem; color: #64748b; }
+
+/* ---- Recent payments list (replaces the old plain <table>) ---- */
+.payment-row { display: flex; align-items: center; gap: 12px; padding: 0.6rem 0; }
+.payment-row + .payment-row { border-top: 1px solid var(--admin-border); }
+.payment-row__avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(11,26,42,0.08); color: var(--admin-navy);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 800;
+}
+.payment-row__body { flex: 1; min-width: 0; }
+.payment-row__body strong { display: block; font-size: 0.85rem; color: #0f172a; }
+.payment-row__body span { font-size: 0.74rem; color: #94a3b8; }
+.payment-row__amount { text-align: right; flex-shrink: 0; }
+.payment-row__amount strong { display: block; font-size: 0.85rem; color: #0f172a; }
+.payment-row__amount span { font-size: 0.68rem; color: #94a3b8; }
+.status-pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.68rem; font-weight: 700; text-transform: capitalize; }
+.status-pill--paid { background: rgba(22,163,74,0.12); color: #166534; }
+.status-pill--pending, .status-pill--processing, .status-pill--pending_verification { background: rgba(234,179,8,0.16); color: #92700c; }
+.status-pill--failed, .status-pill--rejected, .status-pill--cancelled, .status-pill--expired { background: rgba(220,38,38,0.12); color: #b42318; }
+.status-pill--suspicious { background: rgba(147,51,234,0.12); color: #7e22ce; }
+
+/* ---- Registration funnel ---- */
+.funnel { display: flex; flex-direction: column; gap: 10px; }
+.funnel-stage { display: flex; align-items: center; gap: 1rem; }
+.funnel-stage__bar {
+  height: 46px; border-radius: 8px; color: #fff; font-weight: 800; font-size: 1.05rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: width 0.4s ease;
+}
+.funnel-stage:nth-child(1) .funnel-stage__bar { background: #2563eb; }
+.funnel-stage:nth-child(2) .funnel-stage__bar { background: var(--admin-gold); }
+.funnel-stage:nth-child(3) .funnel-stage__bar { background: #16a34a; }
+.funnel-stage:nth-child(4) .funnel-stage__bar { background: #9333ea; }
+.funnel-stage__label { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.funnel-stage__label strong { font-size: 0.86rem; color: #0f172a; }
+.funnel-stage__label span { font-size: 0.78rem; color: #94a3b8; font-weight: 700; }
+
+/* ---- Recent activity feed ---- */
+.activity-feed { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+.activity-item { display: flex; align-items: flex-start; gap: 10px; flex: 1 1 220px; min-width: 200px; }
+.activity-item__icon {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 0.95rem;
+  background: rgba(11,26,42,0.08); color: var(--admin-navy);
+}
+.activity-item__body strong { display: block; font-size: 0.84rem; color: #0f172a; }
+.activity-item__body span { font-size: 0.74rem; color: #94a3b8; }
+
+/* ---- Stat cards (dashboard home) ---- */
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .admin-sidebar { transform: translateX(-100%); box-shadow: 0 0 40px rgba(0,0,0,0.3); }
+  .admin-sidebar.is-open { transform: translateX(0); }
+  .admin-sidebar-backdrop.is-open { display: block; }
+  .admin-shell { margin-left: 0; }
+  .admin-topbar { left: 0; }
+  .admin-topbar__burger { display: block; }
+  .admin-topbar__search { display: none; }
+  .admin-topbar__search-mobile-link { display: flex; }
+  .admin-main { padding: calc(var(--admin-topbar-h) + 1rem) 1rem 2rem; }
+  .chart-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .dash-row { grid-template-columns: 1fr; }
+  .funnel-stage { flex-wrap: wrap; }
+  .funnel-stage__bar { width: 100% !important; }
+}
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: 1fr; }
+  .admin-topbar h1 { font-size: 1rem; }
+  .stat-card__sparkline { display: none; }
+  .quick-actions { grid-template-columns: repeat(2, 1fr); }
+  .activity-feed { flex-direction: column; }
+}
+
+/* ---- Tables inside the dashboard shell ---- */
+.admin-main .table { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(15,23,42,0.06); border: 1px solid var(--admin-border); }
+/* FIX: overflow:hidden above (kept for desktop so rounded corners clip
+   the header row correctly) was ALSO clipping wide tables on narrow
+   screens instead of allowing scroll — table data was being invisibly
+   cut off, not just visually compressed. Override to a scrollable table
+   on mobile instead. */
+@media (max-width: 700px) {
+  .admin-main .table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+}
+.admin-main .table th { background: var(--admin-bg); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.03em; color: #64748b; }
+.admin-main h2.section-title { font-size: 1.05rem; margin-top: 2rem; }

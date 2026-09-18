@@ -1,0 +1,71 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>Contact EGUP, Narok, Kenya</title>
+<meta name="description" content="Get in touch with EGUP in Narok Town, Kenya. Email egupa@gmail.com, call +254 725 077 288, or send us a message directly.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="Contact EGUP, Narok, Kenya">
+<meta property="og:description" content="Get in touch with EGUP in Narok Town, Kenya. Email egupa@gmail.com, call +254 725 077 288, or send us a message directly.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" with active="contact" %}
+
+<main id="main">
+
+  <section class="page-hero">
+    <div class="page-hero__image">
+      <img src="{% static 'images/hero/hero-outreach-crowd.jpg' %}" alt="" loading="eager">
+    </div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span><span>Contact</span>
+      </nav>
+      <p class="eyebrow on-navy">We'd love to hear from you</p>
+      <h1>Contact EGUP</h1>
+      <p>Questions about the program, an event, or a partnership? Send us a message, or reach us directly below.</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top: var(--space-7);">
+    <div class="container">
+      <div class="split">
+        <div class="reveal">
+          <div class="contact-detail contact-detail--accent"><div><h4>Location</h4><p>Lenana, Narok Town, Kenya</p></div></div>
+          <div class="contact-detail contact-detail--accent"><div><h4>Email</h4><a href="mailto:egupa@gmail.com">egupa@gmail.com</a></div></div>
+          <div class="contact-detail contact-detail--accent"><div><h4>Phone</h4><a href="tel:+254725077288">+254 725 077 288</a></div></div>
+          <iframe class="map-frame mt-5" title="Map showing Lenana, Narok Town, Kenya" width="100%" height="360" src="https://www.openstreetmap.org/export/embed.html?bbox=35.852%2C-1.098%2C35.882%2C-1.068&layer=mapnik&marker=-1.083%2C35.867" loading="lazy" referrerpolicy="no-referrer-when-downgrade" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+          <a href="https://www.google.com/maps/search/?api=1&query=Lenana%2C+Narok+Town%2C+Kenya" target="_blank" rel="noopener noreferrer" class="text-link mt-3" style="display:inline-flex;">Open in Google Maps &rarr;</a>
+        </div>
+
+        <form id="contact-form" class="reveal" method="post" action="/api/contact" novalidate>
+          <div class="card" style="padding: var(--space-6); border-top: 4px solid var(--color-gold);">
+            {% csrf_token %}
+            <div class="form-row form-row--2">
+              <div class="form-field"><label for="c-name">Full name</label><input type="text" id="c-name" name="name" autocomplete="name" required></div>
+              <div class="form-field"><label for="c-email">Email address</label><input type="email" id="c-email" name="email" autocomplete="email" required></div>
+            </div>
+            <div class="form-row form-row--2">
+              <div class="form-field"><label for="c-phone">Phone <span class="hint">(optional)</span></label><input type="tel" id="c-phone" name="phone" autocomplete="tel"></div>
+              <div class="form-field"><label for="c-subject">Subject</label><input type="text" id="c-subject" name="subject" placeholder="What is this about?"></div>
+            </div>
+            <div class="form-field"><label for="c-message">Message</label><textarea id="c-message" name="message" required placeholder="Write your message here"></textarea></div>
+            <button type="submit" class="btn btn--primary btn--block mt-5">Send message</button>
+            <p class="form-status" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+<script type="module" src="{% static 'js/contact.js' %}"></script>
+</body>
+</html>

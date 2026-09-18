@@ -1,0 +1,1206 @@
+/* =========================================================
+   EGUP — Components
+   ========================================================= */
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.9em 1.7em;
+  font-weight: 700;
+  font-size: var(--step--1);
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-sm);
+  transition: transform var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+  white-space: nowrap;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+.btn--primary {
+  background: var(--color-gold);
+  color: var(--color-navy-deep);
+}
+.btn--primary:hover { background: var(--color-gold-soft); }
+
+.btn--outline {
+  border: 1.5px solid var(--color-on-navy-muted);
+  color: var(--color-on-navy);
+}
+.btn--outline:hover { border-color: var(--color-on-navy); background: rgba(245,246,244,0.08); }
+
+.btn--solid-navy {
+  background: var(--color-navy);
+  color: var(--color-on-navy);
+}
+.btn--solid-navy:hover { background: var(--color-navy-deep); }
+
+.btn--ghost-navy {
+  border: 1.5px solid rgba(30,58,95,0.28);
+  color: var(--color-navy);
+}
+.btn--ghost-navy:hover { border-color: var(--color-navy); background: rgba(30,58,95,0.05); }
+
+.btn--sm { padding: 0.65em 1.3em; font-size: var(--step--1); }
+.btn--block { width: 100%; justify-content: center; }
+.btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-weight: 700;
+  color: var(--color-green);
+  border-bottom: 1.5px solid transparent;
+  transition: border-color var(--dur-fast) var(--ease), gap var(--dur-fast) var(--ease);
+}
+.text-link:hover { border-color: currentColor; gap: 0.6em; }
+.text-link--on-navy { color: var(--color-gold-soft); }
+
+/* ---- Hero carousel (homepage) ----
+   Restructured so the fixed .site-header and the stat bar are no longer
+   painted over the photo: the section is pushed down by --header-h (the
+   photo now starts right below the nav instead of behind it), and the
+   stat bar sits in normal flow as its own solid band after the photo
+   frame rather than absolutely overlaid on it. */
+.hero {
+  position: relative;
+  margin-top: var(--header-h);
+  display: flex;
+  flex-direction: column;
+  color: var(--color-on-navy);
+  background: var(--color-navy-deep);
+}
+.hero__frame {
+  position: relative;
+  min-height: calc(100svh - var(--header-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+.hero__slides {
+  position: absolute; inset: 0;
+}
+.hero__slide {
+  position: absolute; inset: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 1400ms var(--ease);
+}
+.hero__slide.is-active { opacity: 1; }
+.hero__slide img {
+  width: 100%; height: 100%; object-fit: cover;
+  transform-origin: center center;
+  /* Slow Ken Burns drift — alternates in/out so a slide never looks
+     static, subtle enough not to fight the copy on top of it. */
+  animation: heroKenBurns 14s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.hero__slide:nth-child(even) img { animation-direction: alternate-reverse; }
+@keyframes heroKenBurns {
+  from { transform: scale(1); }
+  to { transform: scale(1.09); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__slide img { animation: none; }
+}
+.hero__scrim {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(0deg, rgba(15,28,46,0.92) 0%, rgba(15,28,46,0.35) 46%, rgba(15,28,46,0.55) 100%);
+}
+.hero__content {
+  position: relative;
+  z-index: 2;
+  padding-block: var(--space-6);
+  width: 100%;
+}
+.hero__eyebrow {
+  font-size: var(--step--1);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-gold-soft);
+}
+.hero h1 {
+  color: var(--color-on-navy);
+  font-size: clamp(1.9rem, 1.3rem + 3vw, 3.4rem);
+  line-height: 1.14;
+  max-width: 21ch;
+  margin-top: var(--space-3);
+}
+.hero__desc {
+  margin-top: var(--space-3);
+  max-width: 52ch;
+  font-size: var(--step-1);
+  color: var(--color-on-navy-muted);
+}
+.hero__actions {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.hero__meta {
+  margin-top: var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+@media (max-height: 760px) {
+  .hero__desc { display: none; }
+  .hero__meta { margin-top: var(--space-4); }
+}
+@media (max-width: 560px) {
+  .hero__meta { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+}
+.hero__dots {
+  display: flex;
+  gap: 10px;
+}
+.hero__dots button {
+  width: 26px; height: 3px;
+  background: rgba(245,246,244,0.35);
+  transition: background var(--dur-fast) var(--ease);
+}
+.hero__dots button.is-active { background: var(--color-gold); }
+.hero__scroll-cue {
+  font-size: var(--step--1);
+  color: var(--color-on-navy-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.hero__scroll-cue .line {
+  width: 1px; height: 26px;
+  background: linear-gradient(var(--color-gold), transparent);
+}
+
+/* ---- Hero stat bar — now a solid band that sits in normal document
+   flow right after .hero__frame (see markup), rather than absolutely
+   overlaid on the photo. It no longer needs to blend with an image
+   behind it, so a flat navy background replaces the old translucent
+   blur-over-photo treatment. ---- */
+.hero__statbar {
+  position: relative;
+  z-index: 3;
+  background: var(--color-navy);
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+.hero__statbar-inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  padding-block: var(--space-4);
+}
+.hero__stat {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.hero__stat i {
+  font-size: 1.4rem;
+  color: var(--color-gold);
+  flex-shrink: 0;
+}
+.hero__stat strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+.hero__stat span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--color-on-navy-muted);
+  margin-top: 2px;
+}
+@media (max-width: 900px) {
+  .hero__statbar-inner { grid-template-columns: repeat(2, 1fr); row-gap: var(--space-3); }
+}
+@media (max-width: 480px) {
+  .hero__statbar-inner { padding-block: var(--space-3); }
+  .hero__stat strong { font-size: var(--step-1); }
+}
+
+/* ---- The Meaning of EGUP — signature element ----
+   Rebuilt from a hover-reveal pattern (poor on touch devices — the
+   description was invisible until hover/focus, meaning most mobile
+   visitors never saw it) to an always-visible icon-circle + underline
+   layout, matching the reference design's visual language. */
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+}
+@media (min-width: 760px) {
+  .pillars { grid-template-columns: repeat(4, 1fr); }
+  .pillars--three { grid-template-columns: repeat(3, 1fr); }
+}
+.pillar {
+  padding-inline-start: var(--space-4);
+  border-left: 1px solid var(--color-hairline);
+}
+.pillar__top {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: var(--space-3);
+}
+.pillar__icon {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(245, 144, 31, 0.12);
+  color: var(--color-gold-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.pillar__word {
+  font-weight: 700;
+  color: var(--color-heading);
+  font-size: var(--step-0);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.pillar__underline {
+  width: 32px; height: 3px;
+  background: var(--color-gold);
+  margin: var(--space-2) 0;
+  border-radius: 2px;
+}
+.pillar__desc {
+  font-size: var(--step--1);
+  color: var(--color-body);
+  max-width: 30ch;
+}
+
+/* ---- Groups showcase (about.html) — photo + content split, with the
+   group names as small icon badges instead of a plain dot-separated
+   list. Only used here (verified against templates before rewriting). ---- */
+.groups-showcase {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: var(--space-7);
+  align-items: center;
+}
+@media (max-width: 860px) {
+  .groups-showcase { grid-template-columns: 1fr; }
+}
+.groups-showcase__media { position: relative; }
+.groups-showcase__media::before {
+  content: "";
+  position: absolute;
+  inset: var(--space-4) calc(-1 * var(--space-4)) calc(-1 * var(--space-4)) var(--space-4);
+  border: 1px solid var(--color-gold);
+  border-radius: var(--radius-md);
+  z-index: 0;
+}
+.groups-showcase__media img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 40px -20px rgba(11,26,42,0.35);
+}
+.group-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.group-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.65em 1.1em;
+  border: 1px solid var(--color-hairline);
+  border-radius: 999px;
+  background: var(--color-card);
+  font-weight: 700;
+  color: var(--color-navy-deep);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.group-chip:hover {
+  border-color: var(--color-gold);
+  box-shadow: 0 6px 16px rgba(184,134,11,0.14);
+  transform: translateY(-1px);
+}
+.group-chip__icon {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-navy); color: var(--color-gold-soft);
+  font-size: 0.7rem; flex-shrink: 0;
+}
+
+/* ---- Editorial list (Mission / Objectives / Ministry areas) ---- */
+.edit-list { border-top: 1px solid var(--color-hairline); }
+.edit-list li {
+  display: grid;
+  grid-template-columns: 2.4em 1fr;
+  gap: var(--space-3);
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--color-hairline);
+}
+.edit-list li span.idx {
+  font-weight: 800;
+  color: var(--color-gold);
+  font-size: var(--step-0);
+}
+.edit-list li p { color: var(--color-heading); font-size: var(--step-0); font-weight: 600; }
+
+/* ---- Program / ministry rows (photo + text alternating) ---- */
+.program-row {
+  display: grid;
+  gap: var(--space-5);
+  padding-block: var(--space-6);
+  border-bottom: 1px solid var(--color-hairline);
+  scroll-margin-top: var(--header-h, 84px);
+}
+.program-row:first-of-type { border-top: 1px solid var(--color-hairline); }
+@media (min-width: 820px) {
+  .program-row { grid-template-columns: 0.85fr 1.15fr; align-items: center; }
+  .program-row.is-reverse .program-row__figure { order: 2; }
+}
+.program-row__figure { border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-card); }
+.program-row__figure img { aspect-ratio: 4/3; object-fit: cover; }
+.program-row__num {
+  font-size: var(--step--1);
+  font-weight: 800;
+  color: var(--color-gold);
+  letter-spacing: 0.1em;
+}
+.program-row h3 { font-size: var(--step-3); margin-top: var(--space-2); }
+.program-row p { margin-top: var(--space-3); }
+
+/* ---- Cards: events / announcements ---- */
+.card {
+  position: relative;
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--dur-med, 240ms) var(--ease), box-shadow var(--dur-med, 240ms) var(--ease);
+}
+a.card:hover, a.card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px -12px rgba(11,26,42,0.25);
+}
+.card__badge {
+  position: absolute;
+  top: var(--space-3); right: var(--space-3);
+  z-index: 1;
+  padding: 0.35em 0.9em;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: var(--color-navy);
+  color: var(--color-gold-soft);
+}
+.card__badge--sold-out { background: rgba(11,26,42,0.85); color: #fff; }
+
+/* ---- CTA icon band (dark section with a large icon-circle beside the
+   headline, matching the reference's "Be Part of a Movement" style) ---- */
+.cta-icon-band__icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(245, 144, 31, 0.15);
+  color: var(--color-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+/* ---- Event date-badge card (dark "24 AUG" box over the image,
+   matching the reference design) ---- */
+.event-datecard { padding: 0 !important; }
+.event-datecard__figure { position: relative; aspect-ratio: 4/3; overflow: hidden; border-radius: var(--radius-md) var(--radius-md) 0 0; }
+.event-datecard__figure img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease); }
+.event-datecard:hover .event-datecard__figure img { transform: scale(1.05); }
+.event-datecard__badge {
+  position: absolute; top: 0.75rem; left: 0.75rem;
+  background: var(--color-navy);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.7rem;
+  text-align: center;
+  line-height: 1.1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+.event-datecard__badge strong { display: block; font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--color-gold); }
+.event-datecard__badge span { display: block; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-on-navy-muted); }
+.event-datecard__body { padding: 1rem 1.1rem 1.25rem; }
+.event-datecard__body p { font-size: 0.85rem; color: var(--color-body); }
+.event-datecard__body p i { color: var(--color-gold-deep); margin-right: 0.25rem; }
+
+/* ---- Program cards (image + icon-circle badge, matching the
+   reference design's card language) ---- */
+.program-card { padding: 0 !important; }
+.program-card__figure { aspect-ratio: 4/3; overflow: hidden; border-radius: var(--radius-md) var(--radius-md) 0 0; }
+.program-card__figure img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-slow) var(--ease); }
+.program-card:hover .program-card__figure img { transform: scale(1.05); }
+.program-card__icon {
+  position: relative;
+  z-index: 2;
+  margin-top: -22px;
+  margin-left: 1rem;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--color-navy);
+  color: var(--color-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 12px rgba(11,26,42,0.3);
+  border: 3px solid var(--color-card);
+}
+.program-card__body { padding: 0.5rem 1.25rem 1.25rem; }
+
+/* ---- Loading / empty state ---- */
+.state-msg {
+  padding: var(--space-5);
+  border: 1px dashed var(--color-hairline);
+  border-radius: var(--radius-md);
+  color: var(--color-body);
+  font-size: var(--step--1);
+  text-align: center;
+}
+
+/* ---- Gallery (admin media manager — public gallery.html uses its
+   own .public-gallery-grid in admin-extra.css instead) ---- */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+@media (min-width: 640px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: var(--space-4); } }
+@media (min-width: 1020px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); } }
+
+/* ---- Forms ---- */
+.form-field { display: flex; flex-direction: column; gap: 0.5em; margin-top: var(--space-4); }
+.form-field label { font-size: var(--step--1); font-weight: 700; color: var(--color-heading); }
+.form-field .hint { font-weight: 400; color: var(--color-body); }
+.form-field input,
+.form-field textarea,
+.form-field select {
+  padding: 0.85em 1em;
+  border: 1.5px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--color-card);
+  color: var(--color-heading);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus { border-color: var(--color-green); outline: none; }
+.form-field textarea { resize: vertical; min-height: 130px; }
+.form-row { display: grid; gap: var(--space-4); }
+@media (min-width: 620px) { .form-row--2 { grid-template-columns: 1fr 1fr; } }
+.form-status {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-size: var(--step--1);
+  font-weight: 600;
+  display: none;
+}
+.form-status.is-visible { display: block; }
+.form-status--success { background: rgba(45,106,79,0.12); color: var(--color-green-deep); }
+.form-status--error { background: rgba(178,58,58,0.1); color: #8a2f2f; }
+.field-error { color: #8a2f2f; font-size: var(--step--1); margin-top: 4px; }
+.form-field input[aria-invalid="true"],
+.form-field select[aria-invalid="true"] { border-color: #8a2f2f; }
+
+/* ---- Contact ---- */
+.contact-detail { display: flex; gap: var(--space-3); padding-block: var(--space-4); border-bottom: 1px solid var(--color-hairline-on-navy); }
+.contact-detail:last-child { border-bottom: none; }
+.contact-detail h4 { color: var(--color-on-navy); font-size: var(--step--1); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+.contact-detail p, .contact-detail a { margin-top: 0.35em; color: var(--color-on-navy-muted); font-size: var(--step-0); }
+.contact-detail a:hover { color: var(--color-gold-soft); }
+
+/* Light-background variant (contact.html) — the navy-text-on-navy-bg
+   version above assumes a dark section behind it; this pairs with a
+   plain light section instead, using a gold accent border rather than
+   full navy immersion for color balance. */
+.contact-detail--accent {
+  border-bottom: 1px solid var(--color-hairline);
+  border-left: 3px solid var(--color-gold);
+  padding-left: var(--space-4);
+}
+.contact-detail--accent h4 { color: var(--color-navy-deep); }
+.contact-detail--accent p, .contact-detail--accent a { color: var(--color-body); }
+.contact-detail--accent a:hover { color: var(--color-gold-deep); }
+
+.map-frame {
+  border: 0;
+  width: 100%;
+  aspect-ratio: 16/10;
+  border-radius: var(--radius-md);
+  filter: grayscale(0.15);
+}
+
+/* ---- CTA band ---- */
+.cta-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+.cta-band h2 { font-size: var(--step-4); max-width: 16ch; }
+
+/* ---- Back to top ---- */
+.to-top {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  width: 46px; height: 46px;
+  border-radius: 999px;
+  background: var(--color-navy);
+  color: var(--color-on-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+  z-index: 60;
+  box-shadow: var(--shadow-lift);
+}
+.to-top.is-visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+
+/* ---- Reveal-on-scroll ---- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* =========================================================
+   Membership registration wizard
+   ========================================================= */
+.reg-progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  counter-reset: reg-step;
+}
+.reg-progress__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--step--1);
+  font-weight: 700;
+  color: var(--color-body);
+}
+.reg-progress__item::before {
+  counter-increment: reg-step;
+  content: counter(reg-step);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--color-bg-alt);
+  color: var(--color-body);
+  font-size: 0.8rem;
+}
+.reg-progress__item.is-active { color: var(--color-navy); }
+.reg-progress__item.is-active::before { background: var(--color-navy); color: var(--color-on-navy); }
+.reg-progress__item.is-done::before { background: var(--color-green); color: var(--color-on-navy); content: "\2713"; }
+
+.reg-step[hidden] { display: none; }
+.reg-wizard { max-width: 760px; margin-inline: auto; }
+.reg-step { padding: var(--space-6); }
+.reg-step--wide-pad { padding: var(--space-7); }
+.reg-step--centered { text-align: center; }
+@media (max-width: 420px) {
+  /* At 320-414px, --space-6 (48px) or --space-7 (72px) of padding on each
+     side eats a disproportionate share of an already-narrow screen —
+     confirmed by tracing actual available width at 320px (only ~176px
+     left for form content otherwise). Not a rewrite of the design, just
+     the same padding scale already used elsewhere in this file for
+     narrow viewports. */
+  .reg-step { padding: var(--space-4); }
+  .reg-step--wide-pad { padding: var(--space-5); }
+}
+
+.checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--color-hairline);
+  border-radius: var(--radius-sm);
+  font-size: var(--step--1);
+  cursor: pointer;
+}
+.checklist-item input { width: auto; }
+.checklist-item:has(input:checked) { border-color: var(--color-green); background: rgba(45,106,79,0.06); }
+
+.review-list {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 10px 20px;
+  margin: 0;
+}
+.review-list dt { font-weight: 700; color: var(--color-heading); font-size: var(--step--1); }
+.review-list dd { margin: 0; color: var(--color-body); font-size: var(--step--1); }
+
+.payment-status {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--step-0);
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+.payment-status--info { background: rgba(30,58,95,0.08); color: var(--color-navy); }
+.payment-status--error { background: rgba(178,58,58,0.1); color: #8a2f2f; }
+.payment-status--success { background: rgba(22,101,52,0.1); color: #166534; }
+
+.payment-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--color-hairline);
+  border-top-color: var(--color-navy);
+  border-radius: 50%;
+  margin: 0 auto var(--space-4);
+  animation: spin 900ms linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.confirm-panel {
+  text-align: center;
+  padding: var(--space-6);
+}
+.confirm-panel__number {
+  font-size: var(--step-4);
+  font-weight: 800;
+  color: var(--color-navy);
+  letter-spacing: 0.02em;
+  margin-top: var(--space-2);
+}
+
+/* Footer social links row - only ever appears if the admin has configured
+   at least one enabled link (icon is picked from link.platform in
+   footer.html; falls back to a generic link glyph for anything
+   unrecognised, so any platform name the admin types still renders). */
+.social-links {
+  display: flex;
+  gap: var(--space-4);
+  font-size: 1.15rem;
+}
+.social-links a {
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--color-on-navy-muted);
+  transition: color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.social-links a:hover { color: var(--color-gold-soft); transform: translateY(-1px); }
+.social-links:empty { display: none; }
+
+/* ---- News/announcement cards ---- */
+.news-card { padding: 1.5rem; display: block; text-decoration: none; }
+.news-card__date { font-size: 0.75rem; color: var(--color-gold-deep); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin: 0; }
+.news-card h4 { margin-top: 0.5rem; font-size: 1.05rem; }
+.news-card p { color: var(--color-body); font-size: 0.9rem; }
+
+/* ---- Pill toggle (events.html Upcoming/Past filter) — was a
+   page-local <style> block, moved here so it's a shared, reusable
+   component and stays in sync with the design tokens. ---- */
+.pill-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  background: var(--color-bg-alt);
+  border-radius: 999px;
+}
+.pill-toggle button {
+  padding: 0.6em 1.4em;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: var(--step--1);
+  color: var(--color-body);
+}
+.pill-toggle button.is-active { background: var(--color-navy); color: var(--color-on-navy); }
+
+/* ---- Lightbox (gallery.html photo viewer) — was a page-local <style>
+   block, moved here and switched from hardcoded hex to design tokens. ---- */
+.lightbox {
+  position: fixed; inset: 0;
+  background: rgba(11, 26, 42, 0.92);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 999;
+  padding: var(--space-5);
+  opacity: 0;
+  transition: opacity 220ms var(--ease);
+}
+.lightbox.is-open { opacity: 1; }
+.lightbox img {
+  max-width: 100%; max-height: 90vh; border-radius: var(--radius-md);
+  transform: scale(0.94);
+  transition: transform 220ms var(--ease);
+}
+.lightbox.is-open img { transform: scale(1); }
+.lightbox__close {
+  position: absolute; top: var(--space-4); right: var(--space-4);
+  color: var(--color-on-navy);
+  font-size: 2rem;
+  background: none; border: none; cursor: pointer;
+}
+.lightbox__nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  color: var(--color-on-navy);
+  font-size: 1.4rem;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s ease;
+}
+.lightbox__nav:hover { background: rgba(255,255,255,0.22); }
+.lightbox__nav--prev { left: var(--space-3); }
+.lightbox__nav--next { right: var(--space-3); }
+@media (max-width: 640px) { .lightbox__nav { width: 40px; height: 40px; font-size: 1.1rem; } }
+
+/* ---- Photo band (SLOGAN section, home.html) — a section with a real
+   background photo instead of a flat color. Explicit z-index layers:
+   image (0) < scrim (1) < content (2), so the photo actually renders
+   and the text on top of it stays legible either way. ---- */
+.photo-band {
+  position: relative;
+  overflow: hidden;
+  color: var(--color-on-navy);
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+  /* The "sticky" scroll feel: the photo stays fixed in the viewport
+     while the page scrolls over it (a classic parallax band), rather
+     than scrolling away with the section like a normal image. iOS
+     Safari ignores background-attachment:fixed and just scrolls it
+     normally — a harmless, well-known fallback, not a bug. */
+  background-attachment: fixed;
+  padding-block: var(--space-9);
+}
+@media (max-width: 900px) {
+  /* Fixed backgrounds can jank on touch scroll even where they DO
+     work — scoped to desktop, where the effect is actually smooth. */
+  .photo-band { background-attachment: scroll; }
+}
+/* Media-based variant of .photo-band (an actual <img> instead of a CSS
+   background) — used where the photo itself needs a Ken Burns zoom
+   animation (reuses the same @keyframes heroKenBurns as the hero
+   carousel) rather than the slogan band's fixed/parallax treatment. */
+.photo-band__media-img {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  animation: heroKenBurns 16s ease-in-out infinite alternate;
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-band__media-img { animation: none; }
+}
+.photo-band__scrim {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(160deg, rgba(7,17,32,0.90) 0%, rgba(7,17,32,0.72) 100%);
+}
+.photo-band__content {
+  position: relative; z-index: 2;
+}
+.photo-band .eyebrow { color: var(--color-gold-soft); justify-content: center; }
+.photo-band .section-title { color: var(--color-on-navy); }
+.photo-band .section-lede { color: var(--color-on-navy-muted); }
+.photo-band .contact-detail--accent h4 { color: var(--color-gold-soft); }
+.photo-band .contact-detail--accent p,
+.photo-band .contact-detail--accent a { color: var(--color-on-navy); }
+.photo-band .contact-detail--accent { border-bottom-color: var(--color-hairline-on-navy); }
+
+/* =========================================================
+   Vision / Four Words journey section (about.html)
+   "Four words. One posture before God." — an art-directed
+   sequence rather than four identical text cards. Reuses the
+   site's existing navy/gold/ivory tokens throughout (no new
+   hardcoded colors), and the existing .reveal/is-visible
+   scroll-in mechanism (main.js) for the staggered entrance —
+   no new JS needed.
+   ========================================================= */
+.vision-section {
+  position: relative;
+  background: var(--color-bg-alt);
+  overflow: hidden;
+}
+.vision-intro {
+  position: relative;
+  max-width: 640px;
+}
+.vision-intro .section-title { font-size: var(--step-5); line-height: 1.08; }
+.vision-intro .section-title em {
+  font-style: normal;
+  color: var(--color-gold-deep);
+}
+.vision-intro .section-lede { max-width: 56ch; }
+
+/* Faint oversized decorative cross, pure CSS, no image asset —
+   sits behind the intro copy, never competing with it. */
+.vision-decor {
+  position: absolute;
+  top: -8%; right: 2%;
+  width: 340px; height: 340px;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+.vision-decor::before, .vision-decor::after {
+  content: "";
+  position: absolute;
+  background: var(--color-navy-deep);
+}
+.vision-decor::before { top: 0; left: 45%; width: 10%; height: 100%; }
+.vision-decor::after { top: 30%; left: 10%; width: 80%; height: 10%; }
+@media (max-width: 760px) { .vision-decor { display: none; } }
+
+/* ---- Journey connector: a thin gold line threading the four
+   cards together, horizontal on desktop, vertical on mobile.
+   Drawn as a single background gradient on the grid's ::before,
+   so it sits behind the cards without extra markup. ---- */
+.journey { position: relative; margin-top: var(--space-8); }
+.journey-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-5);
+}
+.journey-grid::before {
+  content: "";
+  position: absolute;
+  top: 38px; left: 6%; right: 6%;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--color-gold) 0 10px, transparent 10px 18px);
+  z-index: 0;
+}
+@media (max-width: 980px) {
+  .journey-grid { grid-template-columns: 1fr 1fr; row-gap: var(--space-7); }
+  .journey-grid::before { display: none; }
+}
+@media (max-width: 620px) {
+  .journey-grid { grid-template-columns: 1fr; }
+  .journey-grid::before { display: none; }
+}
+
+.journey-card {
+  position: relative;
+  z-index: 1;
+  background: var(--color-card);
+  border-radius: 22px;
+  box-shadow: 0 24px 48px -30px rgba(11,26,42,0.35);
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+.journey-card:hover { transform: translateY(-4px); box-shadow: 0 32px 60px -28px rgba(11,26,42,0.4); }
+.journey-grid > .journey-card:nth-child(2) { transition-delay: 120ms; }
+.journey-grid > .journey-card:nth-child(3) { transition-delay: 240ms; }
+.journey-grid > .journey-card:nth-child(4) { transition-delay: 360ms; }
+
+/* Media area: organic curve at the base, cut with a radial mask
+   rather than a straight edge, so it isn't "four boring rectangles". */
+.journey-card__media {
+  position: relative;
+  height: 168px;
+  border-radius: 22px 22px 0 0;
+  overflow: hidden;
+}
+.journey-card__media::after {
+  content: "";
+  position: absolute; left: -10%; right: -10%; bottom: -1px; height: 28px;
+  background: var(--color-card);
+  border-radius: 100% 100% 0 0 / 100% 100% 0 0;
+}
+.journey-card__media img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+.journey-card:hover .journey-card__media img { transform: scale(1.06); }
+
+/* Icon-panel variant (used for the two concepts — Establishment,
+   Understanding — with no literal photo in the media library; a
+   textured navy panel with a large glyph reads as intentional
+   art direction, not a missing image, and gives the row visual
+   rhythm instead of four identical photo tiles). */
+.journey-card__media--icon {
+  background: linear-gradient(155deg, var(--color-navy) 0%, var(--color-navy-deep) 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.journey-card__media--icon i {
+  font-size: 2.6rem;
+  color: var(--color-gold-soft);
+  opacity: 0.85;
+}
+
+.journey-card__badge {
+  position: relative;
+  z-index: 2;
+  width: 56px; height: 56px;
+  margin: -28px auto 0;
+  border-radius: 50%;
+  background: var(--color-navy);
+  color: var(--color-gold-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  border: 3px solid var(--color-card);
+  box-shadow: 0 8px 18px rgba(11,26,42,0.25);
+  transition: transform 0.3s var(--ease);
+}
+.journey-card:hover .journey-card__badge { transform: translateY(-3px); }
+.journey-grid > .journey-card:nth-child(even) .journey-card__badge { background: var(--color-gold-deep); color: var(--color-navy-deep); }
+
+.journey-card__body { padding: var(--space-3) var(--space-5) var(--space-6); text-align: center; }
+.journey-card__label {
+  display: block;
+  font-size: 0.66rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--color-gold-deep);
+  margin-bottom: 0.5em;
+}
+.journey-card__title {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  color: var(--color-navy-deep);
+  margin: 0 0 0.5em;
+}
+.journey-card__desc { font-size: var(--step--1); color: var(--color-body); margin: 0; }
+.journey-card__verse {
+  display: inline-block;
+  margin-top: var(--space-3);
+  font-size: 0.72rem; font-weight: 700; font-style: italic;
+  color: var(--color-gold-deep);
+  border-top: 1px solid var(--color-hairline);
+  padding-top: 0.6em;
+}
+
+/* =========================================================
+   Foundation Scriptures (about.html) — editorial two-column
+   scripture cards with a decorative reading panel, reusing the
+   site's existing green/gold/navy tokens (no new hardcoded
+   colors) rather than inventing a separate palette for one
+   section.
+   ========================================================= */
+.foundation-section { background: var(--color-bg-alt); }
+.foundation-intro {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: var(--space-7);
+  align-items: center;
+  margin-bottom: var(--space-8);
+}
+@media (max-width: 860px) { .foundation-intro { grid-template-columns: 1fr; } }
+.foundation-intro__copy .section-lede { max-width: 52ch; }
+
+/* ---- Open Bible panel — a real photograph now (previously a CSS
+   illustration, before the actual photo was provided). The source
+   image is small (267x148) with a plain white background, so rather
+   than stretch it edge-to-edge (would look blurry) or try to matte
+   out the white (risky on a low-res image, leaves ugly edges), it's
+   presented as a framed print on the warm panel — a deliberate
+   editorial treatment, not a workaround. Animated with a slow Ken
+   Burns zoom (same technique as the hero) plus a small page-corner
+   flip accent for a touch of motion instead of a static photo. ---- */
+.foundation-panel {
+  position: relative;
+  aspect-ratio: 5/4;
+  border-radius: var(--radius-md);
+  background: linear-gradient(155deg, #EDE6D6 0%, #E3D9C2 55%, #D8C9A8 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 24px 44px -26px rgba(11,26,42,0.3);
+  overflow: hidden;
+}
+.foundation-panel::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.5), transparent 60%);
+}
+.foundation-panel__frame {
+  position: relative;
+  z-index: 1;
+  width: 78%;
+  background: #fff;
+  padding: var(--space-3) var(--space-3) var(--space-4);
+  border-radius: 6px;
+  box-shadow: 0 20px 40px -18px rgba(11,26,42,0.4);
+  transform: rotate(-1.2deg);
+  overflow: hidden;
+}
+.foundation-panel__frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: foundationBibleZoom 15s ease-in-out infinite alternate;
+}
+@keyframes foundationBibleZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.12); }
+}
+/* Small page-corner flip accent, top-right of the frame — a touch of
+   continuous motion without needing a second photo. */
+.foundation-panel__frame::after {
+  content: "";
+  position: absolute; top: 0; right: 0;
+  width: 26px; height: 26px;
+  background: linear-gradient(135deg, transparent 50%, #EDE6D6 50%);
+  box-shadow: -2px 2px 6px rgba(11,26,42,0.15);
+  transform-origin: top right;
+  animation: foundationCornerFlip 6s ease-in-out infinite;
+  animation-delay: 1s;
+}
+@keyframes foundationCornerFlip {
+  0%, 45%, 100% { transform: scale(1) rotate(0deg); }
+  18%, 27% { transform: scale(0.82) rotate(-14deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .foundation-panel__frame img { animation: none; }
+  .foundation-panel__frame::after { animation: none; }
+}
+.foundation-panel__note {
+  position: absolute;
+  bottom: var(--space-4); right: var(--space-4);
+  z-index: 2;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step--1);
+  color: var(--color-navy-deep);
+  background: rgba(255,255,255,0.85);
+  padding: 0.4em 0.9em;
+  border-radius: 999px;
+  transform: rotate(-2deg);
+}
+
+.scripture-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+}
+@media (max-width: 700px) { .scripture-grid { grid-template-columns: 1fr; } }
+
+.scripture-card {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-6);
+  border-radius: 18px;
+  background: var(--color-card);
+  border: 1px solid var(--color-hairline);
+  box-shadow: 0 16px 32px -24px rgba(11,26,42,0.25);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.scripture-card:hover { transform: translateY(-3px); box-shadow: 0 22px 40px -22px rgba(11,26,42,0.3); }
+
+/* Restrained organic background shapes — a translucent curve tucked
+   in a corner, not a decoration competing with the text. */
+.scripture-card::after {
+  content: "";
+  position: absolute;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  z-index: 0;
+  opacity: 0.5;
+}
+.scripture-card--green::after { background: radial-gradient(circle, rgba(45,106,79,0.10), transparent 70%); top: -60px; right: -60px; }
+.scripture-card--gold::after { background: radial-gradient(circle, rgba(245,144,31,0.12), transparent 70%); bottom: -70px; left: -50px; }
+.scripture-card--sage::after { background: radial-gradient(circle, rgba(45,106,79,0.08), transparent 70%); top: -50px; left: -70px; }
+.scripture-card--navy::after { background: radial-gradient(circle, rgba(11,26,42,0.08), transparent 70%); bottom: -60px; right: -40px; }
+
+.scripture-card__top { position: relative; z-index: 1; display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); }
+.scripture-card__icon {
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.scripture-card--green .scripture-card__icon { background: rgba(45,106,79,0.12); color: var(--color-green-deep); }
+.scripture-card--gold .scripture-card__icon { background: rgba(245,144,31,0.14); color: var(--color-gold-deep); }
+.scripture-card--sage .scripture-card__icon { background: rgba(45,106,79,0.10); color: var(--color-green); }
+.scripture-card--navy .scripture-card__icon { background: rgba(11,26,42,0.10); color: var(--color-navy); }
+
+.scripture-card__arrow {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--color-hairline);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-navy-deep);
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+.scripture-card:hover .scripture-card__arrow { transform: rotate(45deg); }
+.scripture-card--green:hover .scripture-card__arrow { background: var(--color-green-deep); color: #fff; border-color: var(--color-green-deep); }
+.scripture-card--gold:hover .scripture-card__arrow { background: var(--color-gold-deep); color: #fff; border-color: var(--color-gold-deep); }
+.scripture-card--sage:hover .scripture-card__arrow { background: var(--color-green); color: #fff; border-color: var(--color-green); }
+.scripture-card--navy:hover .scripture-card__arrow { background: var(--color-navy); color: #fff; border-color: var(--color-navy); }
+
+.scripture-card__ref {
+  position: relative; z-index: 1;
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  color: var(--color-navy-deep);
+  margin: var(--space-4) 0 0.4em;
+}
+.scripture-card__excerpt { position: relative; z-index: 1; font-size: var(--step--1); color: var(--color-body); margin: 0; }
+
+.foundation-divider {
+  display: flex; align-items: center; justify-content: center; gap: 0.8em;
+  margin-top: var(--space-8);
+  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--color-green-deep);
+}
+.foundation-divider i { font-size: 0.9rem; }
+.foundation-divider::before, .foundation-divider::after {
+  content: "";
+  height: 1px; width: 60px;
+  background: var(--color-hairline);
+}
+
+/* =========================================================
+   Programs page — a quick-jump overview strip (so the page
+   isn't just "scroll through 8 near-identical text blocks"
+   before you know what's coming), and a small icon badge on
+   each program row's photo for a stronger per-row identity.
+   ========================================================= */
+.program-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+.program-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.55em 1.1em;
+  border: 1px solid var(--color-hairline);
+  border-radius: 999px;
+  font-size: var(--step--1);
+  font-weight: 700;
+  color: var(--color-navy-deep);
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.program-nav a:hover { border-color: var(--color-gold); background: var(--color-bg-alt); transform: translateY(-1px); }
+.program-nav a span { color: var(--color-gold-deep); font-weight: 800; }
+
+.program-row__figure { position: relative; }
+.program-row__badge {
+  position: absolute;
+  top: var(--space-3); left: var(--space-3);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--color-navy);
+  color: var(--color-gold-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 0 8px 18px rgba(11,26,42,0.3);
+  z-index: 1;
+}
+.program-row.is-reverse .program-row__badge { left: auto; right: var(--space-3); }

@@ -1,0 +1,254 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block crumb %}Dashboard{% endblock %}
+{% block extra_head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+
+  <div class="dash-panel__head" style="margin-bottom:1.25rem;">
+    <span style="font-size:0.85rem;color:#64748b;"><i class="bi bi-calendar3"></i> Showing the last 6 months, updated live</span>
+    <a href="{% url 'payments_admin:export' %}" class="btn btn--solid-navy btn--sm"><i class="bi bi-download"></i> Export Payments CSV</a>
+  </div>
+
+  {% if needs_attention.pending_verification_count or needs_attention.suspicious_count %}
+  <div class="card" style="padding:1.1rem 1.3rem;margin-bottom:1.75rem;border-left:4px solid #f59e0b;">
+    <p style="font-weight:700;margin:0 0 0.5rem;"><i class="bi bi-exclamation-triangle-fill" style="color:#f59e0b;"></i> Needs attention</p>
+    <ul style="margin:0;padding-left:1.2rem;font-size:0.9rem;">
+      {% if needs_attention.pending_verification_count %}
+        <li><a href="{% url 'payments_admin:manual_verification_queue' %}">{{ needs_attention.pending_verification_count }} payment{{ needs_attention.pending_verification_count|pluralize }} awaiting manual verification</a>{% if needs_attention.low_confidence_count %} ({{ needs_attention.low_confidence_count }} low confidence){% endif %}</li>
+      {% endif %}
+      {% if needs_attention.suspicious_count %}
+        <li><a href="{% url 'payments_admin:manual_verification_queue' %}">{{ needs_attention.suspicious_count }} payment{{ needs_attention.suspicious_count|pluralize }} flagged suspicious</a></li>
+      {% endif %}
+    </ul>
+    <p style="margin:0.6rem 0 0;font-size:0.82rem;color:#166534;">
+      <i class="bi bi-check-circle-fill"></i> {{ needs_attention.verified_automatic_count }} automatic payment{{ needs_attention.verified_automatic_count|pluralize }} verified &middot;
+      {{ needs_attention.verified_manual_count }} manual payment{{ needs_attention.verified_manual_count|pluralize }} verified
+    </p>
+  </div>
+  {% endif %}
+
+  <!-- ============ STAT CARDS ============ -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div><p class="stat-card__label">Total Members</p><h3>{{ stats.total_members }}</h3></div>
+        <div class="stat-card__icon stat-card__icon--blue"><i class="bi bi-people-fill"></i></div>
+      </div>
+      <div class="stat-card__foot">
+        {% if stat_trends.total_members is not None %}
+          <span class="stat-card__trend {% if stat_trends.total_members > 0 %}stat-card__trend--up{% elif stat_trends.total_members < 0 %}stat-card__trend--down{% else %}stat-card__trend--flat{% endif %}">
+            <i class="bi bi-arrow-{% if stat_trends.total_members > 0 %}up{% elif stat_trends.total_members < 0 %}down{% else %}right{% endif %}-short"></i>{{ stat_trends.total_members }}%
+          </span><span class="stat-card__trend-label">vs last month</span>
+        {% else %}<span class="stat-card__trend-label">New members this month</span>{% endif %}
+        <canvas class="stat-card__sparkline" width="84" height="30" data-sparkline="members" data-color="#2563eb"></canvas>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div><p class="stat-card__label">Active Memberships</p><h3>{{ stats.active_memberships }}</h3></div>
+        <div class="stat-card__icon stat-card__icon--green"><i class="bi bi-person-check-fill"></i></div>
+      </div>
+      <div class="stat-card__foot">
+        {% if stat_trends.active_memberships is not None %}
+          <span class="stat-card__trend {% if stat_trends.active_memberships > 0 %}stat-card__trend--up{% elif stat_trends.active_memberships < 0 %}stat-card__trend--down{% else %}stat-card__trend--flat{% endif %}">
+            <i class="bi bi-arrow-{% if stat_trends.active_memberships > 0 %}up{% elif stat_trends.active_memberships < 0 %}down{% else %}right{% endif %}-short"></i>{{ stat_trends.active_memberships }}%
+          </span><span class="stat-card__trend-label">vs last month</span>
+        {% else %}<span class="stat-card__trend-label">Activated this month</span>{% endif %}
+        <canvas class="stat-card__sparkline" width="84" height="30" data-sparkline="active" data-color="#16a34a"></canvas>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div><p class="stat-card__label">Total Revenue</p><h3>KES {{ stats.revenue_kes }}</h3></div>
+        <div class="stat-card__icon"><i class="bi bi-cash-coin"></i></div>
+      </div>
+      <div class="stat-card__foot">
+        {% if stat_trends.revenue_kes is not None %}
+          <span class="stat-card__trend {% if stat_trends.revenue_kes > 0 %}stat-card__trend--up{% elif stat_trends.revenue_kes < 0 %}stat-card__trend--down{% else %}stat-card__trend--flat{% endif %}">
+            <i class="bi bi-arrow-{% if stat_trends.revenue_kes > 0 %}up{% elif stat_trends.revenue_kes < 0 %}down{% else %}right{% endif %}-short"></i>{{ stat_trends.revenue_kes }}%
+          </span><span class="stat-card__trend-label">vs last month</span>
+        {% else %}<span class="stat-card__trend-label">Collected this month</span>{% endif %}
+        <canvas class="stat-card__sparkline" width="84" height="30" data-sparkline="revenue" data-color="#b8860b"></canvas>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div><p class="stat-card__label">Pending Payments</p><h3>{{ stats.payments_pending }}</h3></div>
+        <div class="stat-card__icon stat-card__icon--purple"><i class="bi bi-hourglass-split"></i></div>
+      </div>
+      <div class="stat-card__foot">
+        {% if stat_trends.payments_pending is not None %}
+          <span class="stat-card__trend {% if stat_trends.payments_pending > 0 %}stat-card__trend--down{% elif stat_trends.payments_pending < 0 %}stat-card__trend--up{% else %}stat-card__trend--flat{% endif %}">
+            <i class="bi bi-arrow-{% if stat_trends.payments_pending > 0 %}up{% elif stat_trends.payments_pending < 0 %}down{% else %}right{% endif %}-short"></i>{{ stat_trends.payments_pending }}%
+          </span><span class="stat-card__trend-label">needs attention</span>
+        {% else %}<span class="stat-card__trend-label">needs attention</span>{% endif %}
+        <canvas class="stat-card__sparkline" width="84" height="30" data-sparkline="pending" data-color="#9333ea"></canvas>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-card__top">
+        <div><p class="stat-card__label">Unread Messages</p><h3>{{ stats.unread_messages }}</h3></div>
+        <div class="stat-card__icon stat-card__icon--orange"><i class="bi bi-envelope-fill"></i></div>
+      </div>
+      <div class="stat-card__foot">
+        <a href="{% url 'content_admin:message_list' %}" style="font-size:0.78rem;font-weight:700;color:var(--admin-gold);text-decoration:none;">View messages &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ GROWTH + DISTRIBUTION + UPCOMING EVENTS ============ -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-card__head"><h3>Membership Growth</h3><span style="font-size:0.76rem;color:#94a3b8;">Last 6 months</span></div>
+      <canvas id="growthChart" height="110"></canvas>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-card__head"><h3>Membership Distribution</h3></div>
+      <div class="distribution">
+        <div class="distribution__ring">
+          <canvas id="distributionChart"></canvas>
+          <div class="distribution__ring-center"><strong>{{ membership_distribution.total }}</strong><span>Total</span></div>
+        </div>
+        <div class="distribution__legend">
+          <div class="distribution__legend-row"><span class="distribution__dot" style="background:#16a34a;"></span> Active <strong>{{ membership_distribution.active }}</strong><span class="pct">({{ membership_distribution.active_pct }}%)</span></div>
+          <div class="distribution__legend-row"><span class="distribution__dot" style="background:#eab308;"></span> Expiring Soon <strong>{{ membership_distribution.expiring_soon }}</strong><span class="pct">({{ membership_distribution.expiring_soon_pct }}%)</span></div>
+          <div class="distribution__legend-row"><span class="distribution__dot" style="background:#dc2626;"></span> Expired <strong>{{ membership_distribution.expired }}</strong><span class="pct">({{ membership_distribution.expired_pct }}%)</span></div>
+          <div class="distribution__legend-row"><span class="distribution__dot" style="background:#94a3b8;"></span> Cancelled <strong>{{ membership_distribution.cancelled }}</strong><span class="pct">({{ membership_distribution.cancelled_pct }}%)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-panel">
+      <div class="dash-panel__head"><h3>Upcoming Events</h3><a href="{% url 'events_admin:list' %}">View all</a></div>
+      {% for event in upcoming_events %}
+        <div class="event-row">
+          <div class="event-row__date"><strong>{{ event.starts_at|date:"d" }}</strong><span>{{ event.starts_at|date:"M" }}</span></div>
+          <div class="event-row__body"><strong>{{ event.title }}</strong><span><i class="bi bi-geo-alt"></i> {{ event.location|default:"TBA" }}</span></div>
+        </div>
+      {% empty %}
+        <p style="font-size:0.85rem;color:#94a3b8;">No upcoming published events.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ============ RECENT PAYMENTS + FUNNEL + QUICK ACTIONS ============ -->
+  <div class="dash-row">
+    <div class="dash-panel">
+      <div class="dash-panel__head"><h3>Recent Payments</h3><a href="{% url 'payments_admin:list' %}">View all</a></div>
+      {% for p in recent_payments %}
+        <a href="{% url 'payments_admin:detail' p.id %}" class="payment-row" style="text-decoration:none;color:inherit;">
+          <div class="payment-row__avatar">{{ p.applicant_initials }}</div>
+          <div class="payment-row__body"><strong>{{ p.applicant_name }}</strong><span>{{ p.application_number|default:p.id|slice:":8" }}</span></div>
+          <div class="payment-row__amount">
+            <strong>KES {{ p.amount_kes }}</strong>
+            <span class="status-pill status-pill--{{ p.status|lower }}">{{ p.get_status_display }}</span>
+          </div>
+        </a>
+      {% empty %}<p style="font-size:0.85rem;color:#94a3b8;">No payments yet.</p>{% endfor %}
+    </div>
+
+    <div class="dash-panel">
+      <div class="dash-panel__head"><h3>Registration Funnel</h3></div>
+      <div class="funnel">
+        {% for stage in registration_funnel %}
+          <div class="funnel-stage">
+            <div class="funnel-stage__bar" style="width: {{ stage.pct }}%; min-width: 46px;">{{ stage.count }}</div>
+            <div class="funnel-stage__label"><strong>{{ stage.label }}</strong><span>{{ stage.pct }}%</span></div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div>
+      <div class="dash-panel__head" style="margin-bottom:0.75rem;"><h3 style="font-size:0.95rem;margin:0;">Quick Actions</h3></div>
+      <div class="quick-actions">
+        <a href="{% url 'members_admin:create' %}" class="quick-action quick-action--blue"><span class="quick-action__icon"><i class="bi bi-person-plus-fill"></i></span> Add Member</a>
+        <a href="{% url 'events_admin:create' %}" class="quick-action quick-action--green"><span class="quick-action__icon"><i class="bi bi-calendar-plus-fill"></i></span> Add Event</a>
+        <a href="{% url 'announcements_admin:create' %}" class="quick-action quick-action--orange"><span class="quick-action__icon"><i class="bi bi-megaphone-fill"></i></span> Announce</a>
+        <a href="{% url 'content_admin:hero_create' %}" class="quick-action quick-action--purple"><span class="quick-action__icon"><i class="bi bi-image-fill"></i></span> Hero Slide</a>
+        <a href="{% url 'media_lib_admin:gallery' %}" class="quick-action quick-action--navy"><span class="quick-action__icon"><i class="bi bi-cloud-upload-fill"></i></span> Gallery</a>
+        <a href="{% url 'payments_admin:list' %}" class="quick-action quick-action--gold"><span class="quick-action__icon"><i class="bi bi-cash-stack"></i></span> Payments</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RECENT ACTIVITY ============ -->
+  <div class="dash-panel">
+    <div class="dash-panel__head"><h3>Recent Activity</h3><a href="{% url 'audit_admin:list' %}">View all activity</a></div>
+    <div class="activity-feed">
+      {% for entry in recent_audit|slice:":6" %}
+        <div class="activity-item">
+          <div class="activity-item__icon">
+            {% if "payment" in entry.action %}<i class="bi bi-cash-coin"></i>
+            {% elif "member" in entry.action or "register" in entry.action %}<i class="bi bi-person-fill"></i>
+            {% elif "event" in entry.action %}<i class="bi bi-calendar-event-fill"></i>
+            {% elif "announcement" in entry.action %}<i class="bi bi-megaphone-fill"></i>
+            {% elif "login" in entry.action %}<i class="bi bi-box-arrow-in-right"></i>
+            {% else %}<i class="bi bi-clock-history"></i>{% endif %}
+          </div>
+          <div class="activity-item__body">
+            <strong>{{ entry.action }}</strong>
+            <span>{{ entry.actor|default:"System" }} &middot; {{ entry.created_at|timesince }} ago</span>
+          </div>
+        </div>
+      {% empty %}<p style="font-size:0.85rem;color:#94a3b8;">No activity yet.</p>{% endfor %}
+    </div>
+  </div>
+
+  {{ chart_data|json_script:"chart-data" }}
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById('chart-data').textContent);
+
+  new Chart(document.getElementById('growthChart'), {
+    type: 'line',
+    data: {
+      labels: data.members_labels,
+      datasets: [
+        { label: 'New Members', data: data.members_values, borderColor: '#2563eb', backgroundColor: 'rgba(37,99,235,0.08)', fill: true, tension: 0.35 },
+        { label: 'Newly Active', data: data.active_values, borderColor: '#b8860b', backgroundColor: 'rgba(184,134,11,0.08)', fill: true, tension: 0.35 }
+      ]
+    },
+    options: { plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  new Chart(document.getElementById('distributionChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Active', 'Expiring Soon', 'Expired', 'Cancelled'],
+      datasets: [{ data: [{{ membership_distribution.active }}, {{ membership_distribution.expiring_soon }}, {{ membership_distribution.expired }}, {{ membership_distribution.cancelled }}], backgroundColor: ['#16a34a', '#eab308', '#dc2626', '#94a3b8'], borderWidth: 0 }]
+    },
+    options: { cutout: '72%', plugins: { legend: { display: false } } }
+  });
+
+  // Tiny sparklines on each stat card — same 6-month series backing the
+  // main charts above, no extra queries, just a smaller rendering of data
+  // that's already on the page.
+  var sparkSeries = { members: data.members_values, active: data.active_values, revenue: data.revenue_values, pending: data.pending_values };
+  document.querySelectorAll('[data-sparkline]').forEach(function (canvas) {
+    var key = canvas.getAttribute('data-sparkline');
+    var color = canvas.getAttribute('data-color');
+    var values = sparkSeries[key] || [];
+    if (!values.length) return;
+    new Chart(canvas, {
+      type: 'line',
+      data: { labels: values.map(function (_, i) { return i; }), datasets: [{ data: values, borderColor: color, borderWidth: 2, pointRadius: 0, tension: 0.4, fill: false }] },
+      options: {
+        responsive: false, animation: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        scales: { x: { display: false }, y: { display: false } },
+        elements: { line: { borderJoinStyle: 'round' } }
+      }
+    });
+  });
+})();
+</script>
+{% endblock %}

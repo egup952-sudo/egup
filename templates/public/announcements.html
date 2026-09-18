@@ -1,0 +1,48 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>Announcements | EGUP</title>
+<meta name="description" content="Stay up to date with the latest EGUP announcements, updates and notices.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="Announcements | EGUP">
+<meta property="og:description" content="Stay up to date with the latest EGUP announcements, updates and notices.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" with active="announcements" %}
+
+<main id="main">
+  <section class="page-hero">
+    <div class="page-hero__image"><img src="{% static 'images/gallery/youth-gathering.jpg' %}" alt="" loading="eager"></div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Announcements</span></nav>
+      <p class="eyebrow on-navy">Stay informed</p>
+      <h1>Announcements</h1>
+      <p>The latest news and updates from EGUP.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-narrow">
+      {% for a in announcements %}
+        <article class="card mt-4" style="padding: var(--space-6);">
+          {% if a.is_featured %}<p class="eyebrow">Featured</p>{% endif %}
+          <h3>{{ a.title }}</h3>
+          <p class="mt-2" style="color:var(--color-body);font-size:var(--step--1);">{{ a.created_at|date:"j M Y" }}</p>
+          <div class="prose mt-3">{{ a.body|linebreaks }}</div>
+        </article>
+      {% empty %}
+        <p class="state-msg">No announcements right now, check back soon.</p>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

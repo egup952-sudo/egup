@@ -1,0 +1,33 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Audit Logs{% endblock %}
+{% block heading %}Audit Logs{% endblock %}
+{% block crumb %}Audit Logs{% endblock %}
+{% block content %}
+
+<form method="get" style="margin-bottom:1rem;max-width:320px;">
+  <input type="text" name="q" value="{{ q }}" placeholder="Filter by action, e.g. payment.settle" class="form-field" style="width:100%;">
+</form>
+
+<table class="table">
+  <thead><tr><th>Action</th><th>Actor</th><th>Object</th><th>IP</th><th>When</th></tr></thead>
+  <tbody>
+    {% for entry in page %}
+      <tr>
+        <td>{{ entry.action }}</td>
+        <td>{{ entry.actor|default:"System" }}</td>
+        <td>{% if entry.object_type %}{{ entry.object_type }} #{{ entry.object_id }}{% else %}&mdash;{% endif %}</td>
+        <td>{{ entry.ip_address|default:"—" }}</td>
+        <td>{{ entry.created_at|date:"j M Y H:i" }}</td>
+      </tr>
+    {% empty %}<tr><td colspan="5">No audit activity{% if q %} matching "{{ q }}"{% endif %}.</td></tr>{% endfor %}
+  </tbody>
+</table>
+
+{% if page.has_other_pages %}
+<div style="display:flex;gap:0.5rem;margin-top:1rem;align-items:center;">
+  {% if page.has_previous %}<a href="?page={{ page.previous_page_number }}{% if q %}&q={{ q }}{% endif %}" class="btn btn--ghost-navy btn--sm">&larr; Prev</a>{% endif %}
+  <span style="font-size:0.85rem;color:#64748b;">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a href="?page={{ page.next_page_number }}{% if q %}&q={{ q }}{% endif %}" class="btn btn--ghost-navy btn--sm">Next &rarr;</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+# ─────────────────────────────────────────────────────────
+# EGUP Platform — Railway Deployment Config
+# Single settings module (egup_system.settings) for both local dev and
+# production — behaviour switches on environment variables (DEBUG,
+# DATABASE_URL, ALLOWED_HOSTS, etc.), not a separate settings file.
+# Set DEBUG=False and a real DATABASE_URL in Railway's environment
+# variables; see .env.example for the full list.
+# ─────────────────────────────────────────────────────────
+
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+# makemigrations runs here because this project generates migrations at
+# deploy time rather than committing them to git (see DEPLOYMENT.md /
+# the security audit's migrations note) — `migrate` alone does nothing
+# if no migration files exist yet to apply, which was the actual state
+# of this repo before this line was added: new models (this session
+# added RenewalOTP, RenewalAuthorization, EventTicket, TicketReferenceCounter)
+# would never have reached the production database.
+# seed_roles is idempotent (update_or_create throughout, see its own
+# help text) — safe to run on every deploy, and necessary so a newly
+# added permission (e.g. this session's payments.credentials) actually
+# gets attached to the right roles without someone SSHing in to run it
+# by hand.
+startCommand = "python manage.py makemigrations --noinput && python manage.py migrate --noinput && python manage.py seed_roles && python manage.py collectstatic --noinput && gunicorn egup_system.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+healthcheckPath = "/"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3

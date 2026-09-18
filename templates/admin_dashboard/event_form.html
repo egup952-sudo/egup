@@ -1,0 +1,19 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}{% if is_new %}New Event{% else %}Edit Event{% endif %}{% endblock %}
+{% block heading %}{% if is_new %}New Event{% else %}Edit Event{% endif %}{% endblock %}
+{% block crumb %}Events / Form{% endblock %}
+{% block content %}
+{% if event.image %}<img src="{{ event.image.file.url }}" alt="" style="max-width:320px;border-radius:8px;margin-bottom:1rem;display:block;">{% endif %}
+<form method="post" enctype="multipart/form-data" class="stack" style="max-width:560px;">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="form-field">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+      {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn--primary">Save</button>
+</form>
+{% endblock %}

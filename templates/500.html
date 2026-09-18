@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Something went wrong &mdash; EGUP</title>
+<meta name="robots" content="noindex">
+<!--
+  Deliberately self-contained (no {% include %}, no {% url %}, no
+  static file dependency, no DB query) — this page can be reached
+  precisely when something else on the site has failed, so it must not
+  depend on anything that could ALSO be broken (the header/footer
+  includes query SocialLink from the database, for instance). Plain
+  inline styles only.
+-->
+<style>
+  body { margin:0; font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background:#0b1a2a; color:#fff; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+  .box { max-width:480px; text-align:center; padding:2rem; }
+  .eyebrow { color:#b8860b; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; font-size:0.8rem; }
+  h1 { font-size:1.6rem; margin:0.5rem 0 1rem; }
+  p { color:#cbd5e1; line-height:1.6; }
+  a.btn { display:inline-block; margin-top:1.5rem; padding:0.75rem 1.75rem; background:#b8860b; color:#0b1a2a; font-weight:700; text-decoration:none; border-radius:8px; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <p class="eyebrow">500</p>
+    <h1>Something went wrong on our end</h1>
+    <p>We're sorry — this wasn't your fault. Our team has been notified. Please try again in a moment.</p>
+    <a class="btn" href="/">Return home</a>
+  </div>
+</body>
+</html>

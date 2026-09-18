@@ -1,0 +1,21 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Announcements{% endblock %}
+{% block heading %}Announcements{% endblock %}
+{% block crumb %}Announcements{% endblock %}
+{% block content %}
+<a href="{% url 'announcements_admin:create' %}" class="btn btn--primary" style="margin-bottom:1rem;display:inline-block;">+ New Announcement</a>
+<table class="table">
+  <thead><tr><th>Title</th><th>Status</th><th>Featured</th><th></th></tr></thead>
+  <tbody>
+  {% for a in announcements %}
+    <tr>
+      <td>{{ a.title }}</td><td>{{ a.get_status_display }}</td><td>{% if a.is_featured %}Yes{% endif %}</td>
+      <td>
+        <a href="{% url 'announcements_admin:edit' a.pk %}">Edit</a>
+        <form method="post" action="{% url 'announcements_admin:delete' a.pk %}" style="display:inline;" onsubmit="return confirm('Delete this announcement?');">{% csrf_token %}<button type="submit" style="background:none;border:none;color:#b42318;cursor:pointer;margin-left:8px;">Delete</button></form>
+      </td>
+    </tr>
+  {% empty %}<tr><td colspan="4">No announcements yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

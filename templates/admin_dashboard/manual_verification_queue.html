@@ -1,0 +1,147 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Manual Verification{% endblock %}
+{% block heading %}Manual Verification{% endblock %}
+{% block crumb %}Finance / Manual Verification{% endblock %}
+{% block content %}
+
+<div class="stat-grid" style="margin-bottom:1.5rem;">
+  <div class="stat-card"><h3>{{ summary.pending_count }}</h3><p>Awaiting verification</p></div>
+  <div class="stat-card"><h3>{{ summary.high_confidence }}</h3><p>High confidence</p></div>
+  <div class="stat-card"><h3>{{ summary.low_confidence }}</h3><p>Low confidence, check closely</p></div>
+  <div class="stat-card"><h3>{{ summary.duplicate_flagged }}</h3><p>Flagged suspicious</p></div>
+</div>
+
+{% if not pending %}
+  <p class="state-msg">Nothing waiting for review right now.</p>
+{% endif %}
+
+{% for s in pending %}
+<div class="card manual-review-card" data-application="{{ s.payment.application_number }}" data-amount="{{ s.payment.amount_kes }}" data-transaction="{{ s.transaction_code }}" style="padding:1.25rem;margin-bottom:1rem;border-left:4px solid {% if s.confidence == 'HIGH' %}#16a34a{% elif s.confidence == 'MEDIUM' %}#f59e0b{% else %}#b42318{% endif %};">
+  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+    <div>
+      <p style="font-weight:700;margin:0 0 4px;">{{ s.payment.application_number }}
+        <span style="font-size:0.75rem;font-weight:700;padding:2px 8px;border-radius:999px;
+          {% if s.confidence == 'HIGH' %}background:#dcfce7;color:#166534;{% elif s.confidence == 'MEDIUM' %}background:#fef3c7;color:#92400e;{% else %}background:#fee4e2;color:#b42318;{% endif %}">
+          {{ s.get_confidence_display }}
+        </span>
+      </p>
+      <p style="margin:0;color:#64748b;font-size:0.85rem;">{{ s.confidence_notes }}</p>
+    </div>
+    <div style="text-align:right;font-size:0.85rem;color:#64748b;">Submitted {{ s.submitted_at|date:"j M Y H:i" }}</div>
+  </div>
+
+  <div class="grid grid-2" style="margin-top:1rem;">
+    <div>
+      <p><strong>Purpose:</strong> {{ s.payment.get_purpose_display }}</p>
+      <p><strong>Expected amount:</strong> KES {{ s.payment.amount_kes }}</p>
+      <p><strong>Submitted amount:</strong> KES {{ s.amount_submitted }}</p>
+      <p><strong>Phone on application:</strong> {{ s.payment.phone_number }}</p>
+      <p><strong>Phone used to pay:</strong> {{ s.phone_number_used }}</p>
+    </div>
+    <div>
+      <p><strong>Transaction code:</strong> {{ s.transaction_code }}</p>
+      <p><strong>Payment date:</strong> {{ s.payment_date }}</p>
+      {% if s.payment.member %}<p><strong>Member:</strong> {{ s.payment.member }}</p>{% endif %}
+      {% if s.payment.registration_intent %}<p><strong>Applicant:</strong> {{ s.payment.registration_intent.full_name }}</p>{% endif %}
+      {% with ticket=s.payment.event_ticket.first %}
+        {% if ticket %}
+          <p><strong>Event:</strong> {{ ticket.event.title }}</p>
+          <p><strong>Booked by:</strong> {{ ticket.full_name }} ({{ ticket.quantity }} ticket{{ ticket.quantity|pluralize }})</p>
+          <p><strong>Ticket reference:</strong> {{ ticket.reference_code }}</p>
+        {% endif %}
+      {% endwith %}
+      {% if s.screenshot %}<p><a href="{% url 'payments_admin:manual_screenshot' s.pk %}" target="_blank">View screenshot &rarr;</a></p>{% endif %}
+    </div>
+  </div>
+
+  <!-- Verification checklist (spec section 10): forces the admin to
+       actively confirm each check rather than clicking one generic
+       "Verify" button, the Verify button stays disabled until every
+       box is checked. -->
+  <div class="card" style="padding:0.9rem 1rem;margin-top:1rem;background:#f8fafc;">
+    <p style="font-weight:700;margin:0 0 0.5rem;font-size:0.85rem;">Before verifying, confirm:</p>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:0.85rem;margin-bottom:6px;"><input type="checkbox" class="manual-checklist-item"> Transaction exists in EGUP's M-Pesa records</label>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:0.85rem;margin-bottom:6px;"><input type="checkbox" class="manual-checklist-item"> Transaction code matches exactly</label>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:0.85rem;margin-bottom:6px;"><input type="checkbox" class="manual-checklist-item"> Amount matches (KES {{ s.payment.amount_kes }})</label>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:0.85rem;margin-bottom:6px;"><input type="checkbox" class="manual-checklist-item"> Payment date/time is reasonable</label>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:0.85rem;margin-bottom:6px;"><input type="checkbox" class="manual-checklist-item"> PayBill/account matches EGUP's official payment details</label>
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:0.85rem;margin-bottom:6px;"><input type="checkbox" class="manual-checklist-item"> Transaction code has not already been used elsewhere</label>
+    {% if s.phone_number_used != s.payment.phone_number %}
+    <label style="display:flex;gap:8px;align-items:flex-start;font-size:0.85rem;margin-bottom:6px;color:#92400e;"><input type="checkbox" class="manual-checklist-item"> Phone mismatch reviewed (paid from a different number than the application, not automatically suspicious, someone may pay on another's behalf)</label>
+    {% endif %}
+  </div>
+
+  <div class="form-field" style="margin-top:1rem;margin-bottom:0.5rem;">
+    <label>Notes <span class="hint">(required to reject or flag)</span></label>
+    <input type="text" class="manual-review-notes" placeholder="e.g. matches M-Pesa statement line 14">
+  </div>
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+    <form method="post" action="{% url 'payments_admin:manual_verification_verify' s.pk %}" class="manual-review-action" data-kind="verify">
+      {% csrf_token %}<input type="hidden" name="notes">
+      <button type="submit" class="btn btn--primary manual-verify-btn" style="padding:6px 16px;" disabled>Verify &amp; Mark Paid</button>
+    </form>
+    <form method="post" action="{% url 'payments_admin:manual_verification_reject' s.pk %}" class="manual-review-action" data-kind="reject">
+      {% csrf_token %}<input type="hidden" name="notes">
+      <button type="submit" class="btn btn--ghost-navy" style="padding:6px 16px;">Reject</button>
+    </form>
+    <form method="post" action="{% url 'payments_admin:manual_verification_flag' s.pk %}" class="manual-review-action" data-kind="flag">
+      {% csrf_token %}<input type="hidden" name="notes">
+      <button type="submit" style="padding:6px 16px;background:none;border:1px solid #b42318;color:#b42318;border-radius:8px;cursor:pointer;">Flag Suspicious</button>
+    </form>
+  </div>
+</div>
+{% endfor %}
+
+<h2 class="section-title">Recently resolved</h2>
+<table class="table">
+  <thead><tr><th>Application</th><th>Transaction Code</th><th>Result</th><th>By</th><th>When</th></tr></thead>
+  <tbody>
+    {% for s in resolved %}
+      <tr><td>{{ s.payment.application_number }}</td><td>{{ s.transaction_code }}</td><td>{{ s.get_verification_status_display }}</td><td>{{ s.verified_by|default:"—" }}</td><td>{{ s.verified_at|date:"j M Y H:i" }}</td></tr>
+    {% empty %}<tr><td colspan="5">Nothing resolved yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+
+<script>
+(function () {
+  document.querySelectorAll('.manual-review-card').forEach(function (card) {
+    var notesInput = card.querySelector('.manual-review-notes');
+    var checklistItems = card.querySelectorAll('.manual-checklist-item');
+    var verifyBtn = card.querySelector('.manual-verify-btn');
+
+    function updateVerifyButton() {
+      var allChecked = Array.prototype.every.call(checklistItems, function (cb) { return cb.checked; });
+      if (verifyBtn) verifyBtn.disabled = !allChecked;
+    }
+    checklistItems.forEach(function (cb) { cb.addEventListener('change', updateVerifyButton); });
+    updateVerifyButton();
+
+    card.querySelectorAll('.manual-review-action').forEach(function (form) {
+      form.addEventListener('submit', function (e) {
+        var kind = form.dataset.kind;
+        var notes = notesInput.value.trim();
+        if ((kind === 'reject' || kind === 'flag') && !notes) {
+          e.preventDefault();
+          alert('Please add a note explaining why.');
+          return;
+        }
+        var confirmMsg;
+        if (kind === 'verify') {
+          confirmMsg = "You are about to mark this payment as PAID.\n\n" +
+            "Application: " + card.dataset.application + "\n" +
+            "Amount: KES " + card.dataset.amount + "\n" +
+            "Transaction: " + card.dataset.transaction + "\n\n" +
+            "Confirm that you have verified this transaction against EGUP's M-Pesa records.";
+        } else if (kind === 'reject') {
+          confirmMsg = 'Reject this payment? The applicant will be able to submit a corrected payment afterward.';
+        } else {
+          confirmMsg = 'Flag as suspicious?';
+        }
+        if (!confirm(confirmMsg)) { e.preventDefault(); return; }
+        form.querySelector('input[name="notes"]').value = notes;
+      });
+    });
+  });
+})();
+</script>
+{% endblock %}

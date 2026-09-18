@@ -1,0 +1,54 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Payment Settings{% endblock %}
+{% block heading %}Payment Settings{% endblock %}
+{% block crumb %}Finance / Payment Settings{% endblock %}
+{% block content %}
+
+<div class="alert" style="background:{% if automatic_actually_available %}#dcfce7;color:#166534{% else %}#fef3c7;color:#92400e{% endif %};max-width:640px;">
+  {% if automatic_actually_available %}
+    &#10003; Automatic payment (PayHero STK push) is fully configured and available right now.
+  {% else %}
+    &#9888; Automatic payment is currently unavailable, either it's turned off below, or PayHero
+    credentials aren't set (see Finance &gt; Payment Credentials). Manual payment will be shown to
+    applicants instead, as long as it's enabled below.
+  {% endif %}
+</div>
+
+<form method="post" class="stack" style="max-width:640px;">
+  {% csrf_token %}
+  <h3 class="section-title" style="font-size:1rem;">Fees</h3>
+  <div class="form-row form-row--2">
+    <div class="form-field"><label for="{{ form.membership_fee_kes.id_for_label }}">{{ form.membership_fee_kes.label }}</label>{{ form.membership_fee_kes }}</div>
+    <div class="form-field"><label for="{{ form.renewal_fee_kes.id_for_label }}">{{ form.renewal_fee_kes.label }}</label>{{ form.renewal_fee_kes }}</div>
+  </div>
+
+  <h3 class="section-title" style="font-size:1rem;margin-top:1.5rem;">Payment modes</h3>
+  <div class="form-field">
+    <label style="display:flex;align-items:center;gap:8px;font-weight:600;">{{ form.automatic_payment_enabled }} {{ form.automatic_payment_enabled.label }}</label>
+    <small>{{ form.automatic_payment_enabled.help_text }}</small>
+  </div>
+  <div class="form-field">
+    <label style="display:flex;align-items:center;gap:8px;font-weight:600;">{{ form.manual_payment_enabled }} {{ form.manual_payment_enabled.label }}</label>
+    <small>{{ form.manual_payment_enabled.help_text }}</small>
+  </div>
+
+  <h3 class="section-title" style="font-size:1rem;margin-top:1.5rem;">Manual payment instructions</h3>
+  <div class="form-row form-row--2">
+    <div class="form-field"><label for="{{ form.manual_payment_paybill.id_for_label }}">{{ form.manual_payment_paybill.label }}</label>{{ form.manual_payment_paybill }}</div>
+    <div class="form-field"><label for="{{ form.manual_payment_till.id_for_label }}">{{ form.manual_payment_till.label }}</label>{{ form.manual_payment_till }}<small>{{ form.manual_payment_till.help_text }}</small></div>
+  </div>
+  <div class="form-field">
+    <label for="{{ form.manual_payment_account_note.id_for_label }}">{{ form.manual_payment_account_note.label }}</label>
+    {{ form.manual_payment_account_note }}<small>{{ form.manual_payment_account_note.help_text }}</small>
+  </div>
+  <div class="form-field">
+    <label for="{{ form.manual_payment_instructions.id_for_label }}">Additional instructions</label>
+    {{ form.manual_payment_instructions }}
+  </div>
+  <div class="form-field">
+    <label style="display:flex;align-items:center;gap:8px;font-weight:600;">{{ form.manual_payment_screenshot_required }} {{ form.manual_payment_screenshot_required.label }}</label>
+  </div>
+
+  <button type="submit" class="btn btn--primary">Save settings</button>
+</form>
+{% endblock %}

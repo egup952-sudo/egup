@@ -1,0 +1,411 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>EGUP, Establishment, God Revealing Himself, Understanding His Word, Positioning Ourselves</title>
+<meta name="description" content="EGUP is an annual Christian fellowship and outreach program that mobilises believers across Kenya into evangelism, discipleship, prayer, worship and community service. Discover the program, upcoming events and how to take part.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="EGUP, Establishment, God Revealing Himself, Understanding His Word, Positioning Ourselves">
+<meta property="og:description" content="An annual Christian fellowship and outreach program mobilising believers across Kenya into evangelism, discipleship, prayer, worship and community service.">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "EGUP",
+  "alternateName": "Establishment, God Revealing Himself, Understanding His Word, Positioning Ourselves",
+  "email": "egupa@gmail.com",
+  "telephone": "+254725077288",
+  "address": {"@type": "PostalAddress", "streetAddress": "Lenana", "addressLocality": "Narok Town", "addressCountry": "KE"},
+  "parentOrganization": {"@type": "Organization", "name": "Bless A Soul Family Church"}
+}
+</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" with active="home" %}
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" data-hero-carousel>
+    <div class="hero__frame">
+      <div class="hero__slides">
+        {% if slides %}
+          {% for slide in slides %}
+          <div class="hero__slide{% if forloop.first %} is-active{% endif %}" data-title="{{ slide.title }}" data-subtitle="{{ slide.subtitle }}">
+            <img src="{{ slide.image.file.url }}" alt="{{ slide.image.alt_text }}" width="1920" height="1280"{% if forloop.first %} fetchpriority="high"{% endif %}>
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="hero__slide is-active">
+            <img src="{% static 'images/hero/hero-outreach-crowd.jpg' %}" alt="A large crowd of believers gathered together during an EGUP outreach event" width="1920" height="1280" fetchpriority="high">
+          </div>
+        {% endif %}
+      </div>
+      <div class="hero__scrim"></div>
+      <div class="hero__content container">
+        <p class="hero__eyebrow">An annual fellowship &amp; outreach program</p>
+        <div data-hero-content>
+          {% if slides.0 %}
+            <h1 data-hero-title>{{ slides.0.title }}</h1>
+            <p class="hero__desc" data-hero-subtitle>{{ slides.0.subtitle }}</p>
+          {% else %}
+            <h1 data-hero-title>Establishment. God Revealing Himself. Understanding His Word. Positioning Ourselves.</h1>
+            <p class="hero__desc" data-hero-subtitle>EGUP mobilises believers across Kenya into evangelism, discipleship, prayer, worship and community outreach, raising a generation that walks in truth, purpose and divine identity through Christ.</p>
+          {% endif %}
+          <div class="hero__actions">
+            <a href="/events.html" class="btn btn--primary">View Upcoming Events</a>
+            <a href="/registration.html" class="btn btn--outline">Register &amp; Get Involved</a>
+          </div>
+        </div>
+        <div class="hero__meta">
+          <div class="hero__dots" role="tablist" aria-label="Featured photos" data-hero-dots>
+            {% for slide in slides %}
+              <button class="{% if forloop.first %}is-active{% endif %}" aria-label="Show slide {{ forloop.counter }}" data-index="{{ forloop.counter0 }}"></button>
+            {% empty %}
+              <button class="is-active" aria-label="Show slide 1" data-index="0"></button>
+            {% endfor %}
+          </div>
+          <span class="hero__scroll-cue"><span class="line" aria-hidden="true"></span> Scroll to explore</span>
+        </div>
+      </div>
+    </div>
+
+    {% if stats.total_members %}
+    <div class="hero__statbar">
+      <div class="container hero__statbar-inner">
+        <div class="hero__stat">
+          <i class="bi bi-people-fill"></i>
+          <div><strong data-count-to="{{ stats.total_members }}">0</strong><span>Members</span></div>
+        </div>
+        <div class="hero__stat">
+          <i class="bi bi-calendar-event-fill"></i>
+          <div><strong data-count-to="{{ stats.events_held }}">0</strong><span>Events Held</span></div>
+        </div>
+        <div class="hero__stat">
+          <i class="bi bi-geo-alt-fill"></i>
+          <div><strong data-count-to="{{ stats.counties_reached }}">0</strong><span>Counties Reached</span></div>
+        </div>
+        <div class="hero__stat">
+          <i class="bi bi-heart-fill"></i>
+          <div><strong>Countless</strong><span>Lives Impacted</span></div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+  {% if next_event %}
+  <!-- ============ COUNTDOWN TO NEXT EVENT ============ -->
+  <section class="section section--gold" style="padding-block: var(--space-6);">
+    <div class="container" style="text-align:center;" data-countdown-to="{{ next_event.starts_at|date:'c' }}">
+      <p class="eyebrow" style="justify-content:center;">Counting down to</p>
+      <h3 style="margin:4px 0 1rem;color:var(--color-navy-deep);">{{ next_event.title }}</h3>
+      <div class="countdown" style="color:var(--color-navy-deep);">
+        <div class="countdown__unit"><div class="countdown__number" data-cd-days>,</div><div class="countdown__label">Days</div></div>
+        <div class="countdown__unit"><div class="countdown__number" data-cd-hours>,</div><div class="countdown__label">Hours</div></div>
+        <div class="countdown__unit"><div class="countdown__number" data-cd-mins>,</div><div class="countdown__label">Minutes</div></div>
+      </div>
+      <a href="/events/{{ next_event.slug }}.html" class="btn btn--solid-navy mt-5">Event details</a>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- ============ INTRO ============ -->
+  <section class="section">
+    <div class="container">
+      <div class="split">
+        <div>
+          <p class="eyebrow">What is EGUP</p>
+          <h2 class="section-title">A movement of believers, spreading Christ through outreaches.</h2>
+        </div>
+        <div class="stack">
+          <p class="body-lg">EGUP is an annual Christian fellowship and outreach program whose purpose is to mobilise believers into active ministry through evangelism, discipleship, prayer, worship, biblical teaching and community outreach.</p>
+          <p>It brings together churches, institutions, youth and believers to spread the Gospel across Kenya while encouraging spiritual growth, unity and service, spearheaded by <strong class="text-navy">Bless A Soul Family Church</strong>, which serves as the organisation behind the initiative.</p>
+          <a class="text-link" href="/about.html">Read the full story of EGUP &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MEANING / FOUR PILLARS ============ -->
+  <section class="section vision-section">
+    <div class="vision-decor" aria-hidden="true"></div>
+    <div class="container">
+      <div class="vision-intro reveal">
+        <p class="eyebrow">The meaning of EGUP</p>
+        <h2 class="section-title">Four words. One posture before <em>God</em>.</h2>
+        <p class="section-lede">Each letter of EGUP names a movement of the heart, from being planted, to encountering God, to understanding His Word, to living it out.</p>
+      </div>
+
+      <div class="journey">
+        <div class="journey-grid">
+          <div class="journey-card reveal">
+            <div class="journey-card__media journey-card__media--icon"><i class="bi bi-flag-fill"></i></div>
+            <div class="journey-card__badge">E</div>
+            <div class="journey-card__body">
+              <span class="journey-card__label">Rooted in Christ</span>
+              <h3 class="journey-card__title">Establishment</h3>
+              <p class="journey-card__desc">Being firmly planted in faith and in fellowship, a stable foundation from which every believer can grow.</p>
+              <span class="journey-card__verse">Exodus 6:4</span>
+            </div>
+          </div>
+
+          <div class="journey-card reveal">
+            <div class="journey-card__media"><img src="{% static 'images/gallery/worship-praise-team-800.jpg' %}" alt="EGUP members worshipping together" loading="lazy"></div>
+            <div class="journey-card__badge">G</div>
+            <div class="journey-card__body">
+              <span class="journey-card__label">Encounter</span>
+              <h3 class="journey-card__title">God Revealing Himself</h3>
+              <p class="journey-card__desc">Creating space for God to move among His people through worship, prayer and genuine encounter.</p>
+              <span class="journey-card__verse">Exodus 6:3</span>
+            </div>
+          </div>
+
+          <div class="journey-card reveal">
+            <div class="journey-card__media journey-card__media--icon"><i class="bi bi-book-half"></i></div>
+            <div class="journey-card__badge">U</div>
+            <div class="journey-card__body">
+              <span class="journey-card__label">Know &middot; Grow &middot; Apply</span>
+              <h3 class="journey-card__title">Understanding His Word</h3>
+              <p class="journey-card__desc">Teaching that builds discernment, helping believers know Scripture and apply it with confidence.</p>
+              <span class="journey-card__verse">Ephesians 1:18</span>
+            </div>
+          </div>
+
+          <div class="journey-card reveal">
+            <div class="journey-card__media"><img src="{% static 'images/gallery/prayer-walk-street-800.jpg' %}" alt="EGUP members walking out on a prayer walk" loading="lazy"></div>
+            <div class="journey-card__badge">P</div>
+            <div class="journey-card__body">
+              <span class="journey-card__label">Served &middot; Sent &middot; Purposed</span>
+              <h3 class="journey-card__title">Positioning Ourselves</h3>
+              <p class="journey-card__desc">Taking our place in ministry and mission, ready to serve, to go, and to live out our purpose in Christ.</p>
+              <span class="journey-card__verse">Jeremiah 1:5 &middot; Esther 4:14 &middot; 1 Corinthians 12:18</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLOGAN ============ -->
+  <section class="section photo-band" style="background-image:url('{% static 'images/hero/hero-worship-gathering-800.jpg' %}');">
+    <div class="photo-band__scrim"></div>
+    <div class="container photo-band__content" style="text-align:center;">
+      <p class="eyebrow" style="justify-content:center;">Our slogan</p>
+      <h2 class="section-title">Enlighten &middot; Equip &middot; Transform</h2>
+      <p class="section-lede" style="margin-inline:auto;">Build understanding, develop practical skills, and turn what's learned into meaningful action.</p>
+      <a href="/about.html" class="text-link text-link--on-navy mt-4" style="display:inline-flex;justify-content:center;">Read more about EGUP &rarr;</a>
+    </div>
+  </section>
+
+  <!-- ============ ANNUAL THEME BAND ============ -->
+  <section class="section section--gold" data-theme-band>
+    <div class="container">
+      <div class="split split--reverse">
+        <div class="reveal">
+          <p class="eyebrow">This year's theme, <span data-theme-year>2026</span></p>
+          <h2 class="section-title" data-theme-title style="max-width: 14ch;">Positioned for Purpose</h2>
+        </div>
+        <div class="reveal">
+          <p class="body-lg" style="color: var(--color-navy-deep);" data-theme-scripture>&ldquo;For I know the plans I have for you,&rdquo; declares the LORD, &ldquo;plans to prosper you and not to harm you, to give you hope and a future.&rdquo;</p>
+          <p class="mt-3" style="font-weight:700;color:var(--color-navy);" data-theme-ref>Jeremiah 29:11</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VISION & MISSION ============ -->
+  <section class="section">
+    <div class="container">
+      <div class="grid grid-2">
+        <div class="reveal">
+          <p class="eyebrow">Vision</p>
+          <p class="section-title" style="font-size: var(--step-3); font-weight: 700; max-width: none;">To restore souls and deliver people from spiritual bondage by raising a generation that walks in truth, purpose, and divine identity through Christ.</p>
+        </div>
+        <div class="reveal">
+          <p class="eyebrow">Mission</p>
+          <ul class="edit-list mt-3">
+            <li><span class="idx">01</span><p>Evangelism</p></li>
+            <li><span class="idx">02</span><p>Prayer</p></li>
+            <li><span class="idx">03</span><p>Worship</p></li>
+            <li><span class="idx">04</span><p>Teaching God's Word</p></li>
+            <li><span class="idx">05</span><p>Drama and Dance Ministry</p></li>
+            <li><span class="idx">06</span><p>Community Outreach</p></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROGRAMS PREVIEW ============ -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="cta-band">
+        <div>
+          <p class="eyebrow">Ministry programs</p>
+          <h2 class="section-title">How EGUP puts faith into motion</h2>
+        </div>
+        <a href="/programs.html" class="text-link">See all programs &rarr;</a>
+      </div>
+      <div class="grid grid-3 mt-6">
+        <div class="card program-card reveal">
+          <div class="program-card__figure"><img src="{% static 'images/gallery/sports-outreach-match.jpg' %}" alt="Youth taking part in a sports outreach match" class="fade-img" loading="lazy"></div>
+          <span class="program-card__icon"><i class="bi bi-megaphone-fill"></i></span>
+          <div class="program-card__body">
+            <p class="eyebrow">Outreach</p>
+            <h3 style="font-size: var(--step-2);">Gospel Outreach &amp; Evangelism Missions</h3>
+            <p class="mt-2">Carrying the Gospel directly into streets, institutions and communities across Kenya.</p>
+          </div>
+        </div>
+        <div class="card program-card reveal">
+          <div class="program-card__figure"><img src="{% static 'images/gallery/worship-praise-team.jpg' %}" alt="A worship team leading praise and worship" class="fade-img" loading="lazy"></div>
+          <span class="program-card__icon"><i class="bi bi-people-fill"></i></span>
+          <div class="program-card__body">
+            <p class="eyebrow">Gathering</p>
+            <h3 style="font-size: var(--step-2);">Annual Fellowship &amp; Worship Gatherings</h3>
+            <p class="mt-2">The heartbeat of EGUP, believers gathering for worship, teaching and unity each year.</p>
+          </div>
+        </div>
+        <div class="card program-card reveal">
+          <div class="program-card__figure"><img src="{% static 'images/gallery/fellowship-youth.jpg' %}" alt="Young people at a Bible teaching and fellowship session" class="fade-img" loading="lazy"></div>
+          <span class="program-card__icon"><i class="bi bi-book-half"></i></span>
+          <div class="program-card__body">
+            <p class="eyebrow">Discipleship</p>
+            <h3 style="font-size: var(--step-2);">Bible Teaching &amp; Youth Programs</h3>
+            <p class="mt-2">Grounding believers, young and old, in Scripture and equipping them for ministry.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ UPCOMING EVENTS ============ -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <div>
+          <p class="eyebrow">What's coming up</p>
+          <h2 class="section-title">Upcoming events</h2>
+        </div>
+        <a href="/events.html" class="text-link">View full calendar &rarr;</a>
+      </div>
+      <div class="grid grid-3 mt-6">
+        {% for event in upcoming_events %}
+          <a href="/events/{{ event.slug }}.html" class="card event-datecard">
+            <div class="event-datecard__figure">
+              {% if event.image %}<img src="{{ event.image.file.url }}" alt="{{ event.image.alt_text }}" class="fade-img" loading="lazy">{% endif %}
+              <span class="event-datecard__badge"><strong>{{ event.starts_at|date:"d" }}</strong><span>{{ event.starts_at|date:"M" }}</span></span>
+              {% if event.requires_ticket %}
+                {% if event.is_sold_out %}<span class="card__badge card__badge--sold-out">Sold out</span>
+                {% else %}<span class="card__badge">{% if event.ticket_price_kes %}KES {{ event.ticket_price_kes }}{% else %}Free ticket{% endif %}</span>{% endif %}
+              {% endif %}
+            </div>
+            <div class="event-datecard__body">
+              <h3 style="font-size: var(--step-1);">{{ event.title }}</h3>
+              {% if event.location %}<p class="mt-2"><i class="bi bi-geo-alt-fill"></i> {{ event.location }}</p>{% endif %}
+            </div>
+          </a>
+        {% empty %}
+          <p class="state-msg">No upcoming events listed right now, check back soon.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GALLERY HIGHLIGHTS ============ -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="cta-band">
+        <div>
+          <p class="eyebrow">From the field</p>
+          <h2 class="section-title">Gallery highlights</h2>
+        </div>
+        <a href="/gallery.html" class="text-link">Browse full gallery &rarr;</a>
+      </div>
+      <div class="public-gallery-grid mt-6">
+        {% for img in gallery_highlights %}
+          <figure><img src="{{ img.file.url }}" alt="{{ img.alt_text }}" loading="lazy" class="fade-img"></figure>
+        {% empty %}
+          <p class="state-msg">Photos coming soon.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ANNOUNCEMENTS ============ -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-band">
+        <div>
+          <p class="eyebrow">Stay informed</p>
+          <h2 class="section-title">Latest announcements</h2>
+        </div>
+        <a class="text-link" href="/announcements.html">See all announcements &rarr;</a>
+      </div>
+      <div class="grid grid-3 mt-6">
+        {% for a in announcements %}
+          <a href="/announcements.html" class="card news-card reveal">
+            <p class="news-card__date">{{ a.created_at|date:"M d, Y" }}</p>
+            <h4>{{ a.title }}</h4>
+            <p class="mt-2">{{ a.body|truncatewords:18 }}</p>
+            <span class="text-link mt-3">Read more &rarr;</span>
+          </a>
+        {% empty %}
+          <p class="state-msg">No announcements right now.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REGISTRATION CTA ============ -->
+  <section class="section section--navy cta-icon-band">
+    <div class="container">
+      <div class="cta-band">
+        <div class="reveal" style="display:flex; gap:1.25rem; align-items:flex-start;">
+          <span class="cta-icon-band__icon"><i class="bi bi-people-fill"></i></span>
+          <div>
+            <h2 style="color:#fff;">Be part of a movement that matters</h2>
+            <p class="section-lede" style="color: var(--color-on-navy-muted);">Whether you want to attend the annual fellowship, join an outreach team, or serve behind the scenes, there is a place for you.</p>
+          </div>
+        </div>
+        <div class="reveal" style="display:flex; gap: var(--space-3); flex-wrap: wrap;">
+          <a href="/registration.html" class="btn btn--primary">Register Now</a>
+          <a href="/renewal.html" class="btn btn--outline">Renew Membership</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section photo-band" style="padding-top: var(--space-9);">
+    <img class="photo-band__media-img" src="{% static 'images/gallery/volunteer-team.jpg' %}" alt="" loading="lazy">
+    <div class="photo-band__scrim"></div>
+    <div class="container photo-band__content">
+      <div class="split">
+        <div class="reveal">
+          <p class="eyebrow">Reach us</p>
+          <h2 class="section-title">Get in touch with EGUP</h2>
+          <p class="section-lede">Have a question about the program, an event, or how your church or institution can partner with us? We'd love to hear from you.</p>
+          <a href="/contact.html" class="text-link text-link--on-navy mt-4" style="display:inline-flex;">Go to contact page &rarr;</a>
+        </div>
+        <div class="reveal">
+          <div class="contact-detail contact-detail--accent"><div><h4>Location</h4><p>Lenana, Narok Town, Kenya</p></div></div>
+          <div class="contact-detail contact-detail--accent"><div><h4>Email</h4><a href="mailto:egupa@gmail.com">egupa@gmail.com</a></div></div>
+          <div class="contact-detail contact-detail--accent"><div><h4>Phone</h4><a href="tel:+254725077288">+254 725 077 288</a></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+{% include "public/includes/footer.html" %}
+
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+<script type="module" src="{% static 'js/hero-carousel.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Social Links{% endblock %}
+{% block heading %}Social Links{% endblock %}
+{% block crumb %}Social Links{% endblock %}
+{% block content %}
+
+<p style="font-size:0.9rem;color:#64748b;max-width:60ch;margin-bottom:1rem;">
+  These links appear as icons in the footer on every public page and are picked up automatically —
+  no code changes needed. The icon shown is matched from the platform name below.
+</p>
+
+<a href="{% url 'content_admin:social_link_create' %}" class="btn btn--primary" style="margin-bottom:1.25rem;">
+  <i class="bi bi-plus-lg"></i> Add social link
+</a>
+
+<table class="table">
+  <thead><tr><th>Platform</th><th>URL</th><th>Order</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+    {% for link in links %}
+      <tr>
+        <td>{{ link.platform }}</td>
+        <td><a href="{{ link.url }}" target="_blank" rel="noopener noreferrer">{{ link.url }}</a></td>
+        <td>{{ link.display_order }}</td>
+        <td>{% if link.is_active %}<span class="status-pill status-pill--paid">Active</span>{% else %}<span class="status-pill status-pill--cancelled">Hidden</span>{% endif %}</td>
+        <td style="white-space:nowrap;">
+          <a href="{% url 'content_admin:social_link_edit' link.pk %}" class="btn btn--ghost-navy btn--sm">Edit</a>
+          <form method="post" action="{% url 'content_admin:social_link_delete' link.pk %}" style="display:inline;" onsubmit="return confirm('Remove this social link?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn--ghost-navy btn--sm">Delete</button>
+          </form>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No social links yet — add one above to show it in the footer.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Messages{% endblock %}
+{% block heading %}Messages{% endblock %}
+{% block crumb %}Messages{% endblock %}
+{% block content %}
+
+<div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;">
+  <a href="?filter=all" class="btn btn--sm {% if filter_kind == 'all' %}btn--solid-navy{% else %}btn--ghost-navy{% endif %}">All</a>
+  <a href="?filter=unread" class="btn btn--sm {% if filter_kind == 'unread' %}btn--solid-navy{% else %}btn--ghost-navy{% endif %}">Unread {% if unread_count %}({{ unread_count }}){% endif %}</a>
+</div>
+
+<div class="dash-panel">
+  {% for msg in messages_list %}
+    <div class="event-row" style="align-items:flex-start;{% if not msg.is_read %}background:rgba(184,134,11,0.04);border-radius:8px;padding:0.75rem;{% else %}padding:0.75rem 0;{% endif %}">
+      <div class="payment-row__avatar" style="{% if not msg.is_read %}background:rgba(184,134,11,0.15);color:var(--admin-gold);{% endif %}">{{ msg.name|slice:":1"|upper }}</div>
+      <div class="event-row__body">
+        <strong>{{ msg.name }} {% if not msg.is_read %}<span class="status-pill status-pill--pending">New</span>{% endif %}</strong>
+        <span>{{ msg.email }}{% if msg.phone %} &middot; {{ msg.phone }}{% endif %}</span>
+        <p style="margin:0.4rem 0 0;font-size:0.85rem;color:#334155;">{% if msg.subject %}<strong>{{ msg.subject }}:</strong> {% endif %}{{ msg.message }}</p>
+        <span style="font-size:0.72rem;color:#94a3b8;">{{ msg.created_at|date:"j M Y H:i" }}</span>
+      </div>
+      <form method="post" action="{% url 'content_admin:message_toggle_read' msg.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <button type="submit" class="btn btn--ghost-navy btn--sm">{% if msg.is_read %}Mark unread{% else %}Mark read{% endif %}</button>
+      </form>
+    </div>
+  {% empty %}
+    <p style="font-size:0.9rem;color:#94a3b8;">No messages{% if filter_kind == 'unread' %} — you're all caught up{% endif %}.</p>
+  {% endfor %}
+</div>
+{% endblock %}

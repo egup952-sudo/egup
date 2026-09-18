@@ -1,0 +1,39 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}{% if is_new %}New Page{% else %}Edit Page{% endif %}{% endblock %}
+{% block heading %}{% if is_new %}New Page{% else %}Edit Page{% endif %}{% endblock %}
+{% block crumb %}Pages / Form{% endblock %}
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="stack" style="max-width:720px;">
+  {% csrf_token %}
+  <h3>Page details</h3>
+  {% for field in form %}
+    <div class="form-field">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+      {% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+    </div>
+  {% endfor %}
+
+  {% if formset %}
+    <h3 class="mt-6">Content blocks</h3>
+    <p style="font-size:0.85rem;color:#666;">Add blocks in the order they should appear. Text is automatically escaped, no raw HTML can be injected.</p>
+    {{ formset.management_form }}
+    {% for bform in formset %}
+      <div class="card" style="padding:1rem;margin-bottom:0.75rem;">
+        {{ bform.id }}
+        <div class="form-row form-row--2">
+          <div class="form-field"><label>{{ bform.block_type.label }}</label>{{ bform.block_type }}</div>
+          <div class="form-field"><label>{{ bform.order.label }}</label>{{ bform.order }}</div>
+        </div>
+        <div class="form-field"><label>{{ bform.content.label }}</label>{{ bform.content }}</div>
+        <div class="form-field"><label>{{ bform.image.label }}</label>{{ bform.image }}</div>
+        {% if bform.instance.pk %}<label style="font-size:0.85rem;">{{ bform.DELETE }} Delete this block</label>{% endif %}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <button type="submit" class="btn btn--primary">Save</button>
+</form>
+{% if page %}<p class="mt-4"><a href="/pages/{{ page.slug }}.html" target="_blank">Preview this page &rarr;</a></p>{% endif %}
+{% endblock %}

@@ -1,0 +1,49 @@
+# ─────────────────────────────────────────────────────────
+# EGUP Platform — Python Dependencies
+# Single requirements file for local dev AND production
+# ─────────────────────────────────────────────────────────
+
+# Redis client for CACHES (see egup_system/settings.py) — production rate
+# limiting (payment attempts, login lockouts) requires a shared cache
+# across gunicorn workers; falls back to in-memory automatically if
+# REDIS_URL is unset, but that fallback is dev-only, see settings.py.
+redis>=5.0
+
+# Core framework
+django>=4.2,<5.0
+
+# Database
+psycopg2-binary>=2.9        # PostgreSQL driver (production)
+dj-database-url>=2.1        # Parse DATABASE_URL env variable
+
+# Production server
+gunicorn>=21.2              # WSGI server
+whitenoise>=6.6              # Serves static files directly, no separate nginx/CDN needed
+
+# Image handling (gallery/hero uploads, validation)
+Pillow>=10.0
+
+# Security — brute force & lockout protection
+django-axes>=6.0
+
+# Excel export (admin member export)
+openpyxl>=3.1
+
+# HTTP client for the PayHero provider (apps/payments/providers.py)
+requests>=2.31
+
+# Encryption for DB-stored payment credentials (apps/payments/crypto.py)
+# so PayHero/Daraja secrets set via the admin dashboard are never stored
+# as plaintext — see FIELD_ENCRYPTION_KEY in .env.example.
+cryptography>=42.0
+
+# Object storage for media in production (brief section 21) — set
+# USE_S3_STORAGE=True and configure the AWS_* variables to enable.
+django-storages>=1.14
+
+# Membership cards / QR codes intentionally removed — members use their
+# membership number only. djangorestframework and django-crispy-forms
+# (present in earlier drafts of this project) were removed — neither is
+# used anywhere in the codebase (all API endpoints are plain Django
+# JsonResponse views; all forms render with a manual {% for field in
+# form %} loop, not the {% crispy %} tag) — no reason to install them.

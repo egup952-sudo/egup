@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /dashboard/
+Disallow: /django-admin/
+Disallow: /payments/callback/
+Sitemap: /sitemap.xml

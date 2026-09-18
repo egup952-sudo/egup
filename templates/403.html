@@ -1,0 +1,30 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Access denied &mdash; EGUP</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="{% static 'css/variables.css' %}">
+<link rel="stylesheet" href="{% static 'css/base.css' %}">
+<link rel="stylesheet" href="{% static 'css/layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/components.css' %}">
+</head>
+<body>
+{% include "public/includes/header.html" %}
+<main id="main" class="main--header-offset">
+  <section class="section" style="min-height:55vh;display:flex;align-items:center;">
+    <div class="container" style="max-width:560px;text-align:center;">
+      <p class="eyebrow" style="justify-content:center;">403</p>
+      <h1 class="section-title">Access denied</h1>
+      <p class="section-lede" style="margin-inline:auto;">You don't have permission to view this page. If you think this is a mistake, contact EGUP.</p>
+      <div class="mt-6" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="/" class="btn btn--primary">Return home</a>
+        <a href="/contact.html" class="btn btn--ghost-navy">Contact us</a>
+      </div>
+    </div>
+  </section>
+</main>
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+/* =========================================================
+   EGUP — Layout
+   Containers, header, footer, hero, page-section rhythm.
+   ========================================================= */
+
+.container {
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+@media (min-width: 900px) {
+  .container { padding-inline: var(--space-6); }
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: var(--content-narrow);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+.section {
+  padding-block: var(--space-8);
+}
+@media (max-width: 640px) {
+  .section { padding-block: var(--space-7); }
+}
+.section--alt { background: var(--color-bg-alt); }
+.section--navy {
+  background: linear-gradient(160deg, var(--color-navy) 0%, var(--color-navy-deep) 100%);
+  color: var(--color-on-navy);
+}
+.section--navy .section-lede { color: var(--color-on-navy-muted); }
+.section--navy h2, .section--navy h3 { color: var(--color-on-navy); }
+
+/* Warm gold/cream section — balances the navy-heavy pages (brief:
+   "you have used more navy color, try to balance"). Used sparingly, one
+   per page at most, as a change of pace rather than another dark block. */
+.section--gold {
+  background: linear-gradient(160deg, var(--color-section-gold-start) 0%, var(--color-section-gold-end) 100%);
+  color: var(--color-navy-deep);
+}
+.section--gold h2, .section--gold h3 { color: var(--color-navy-deep); }
+.section--gold .eyebrow { color: var(--color-section-gold-eyebrow); }
+
+/* ---- Site header ----
+   FIX (this pass): previously transparent over the hero, switching to a
+   near-white background on scroll — but the logo was always rendered in
+   a white badge box (logo-original.png, dark logo on white), so at the
+   transparent stage the badge floated oddly and at the solid stage the
+   white badge nearly vanished into the equally-light header background.
+   Simplified to a single, solid navy header at all times (rhymes with
+   the site's own primary brand color) with the white-on-transparent
+   logo variant (logo-white.png) — always visible, no badge box needed. */
+.site-header {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 100;
+  padding-block: var(--space-3);
+  background: var(--color-navy);
+  color: var(--color-on-navy);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px -18px rgba(11,26,42,0.5);
+  transition: padding var(--dur-med) var(--ease), box-shadow var(--dur-med) var(--ease);
+}
+.site-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.site-header.is-solid {
+  padding-block: var(--space-2);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px -18px rgba(11,26,42,0.65);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 800;
+  z-index: 2;
+}
+
+/* White logo variant on the solid navy header — no badge box needed,
+   reads clearly at all times instead of a white-on-white/near-invisible
+   badge. */
+.brand__badge {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+.brand__badge img { height: 52px; width: auto; display: block; }
+.brand__badge--lg { padding: 0; }
+.brand__badge--lg img { height: 64px; }
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  width: 26px;
+  position: relative;
+  z-index: 200; /* must stay above .site-nav (150) so it remains visible/clickable as the close control once the menu is open */
+}
+.nav-toggle span {
+  height: 2px;
+  width: 100%;
+  background: currentColor;
+  transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+}
+.nav-toggle.is-active {
+  color: var(--color-on-navy); /* the open menu's background is always navy, regardless of the underlying header state */
+}
+.nav-toggle.is-active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.is-active span:nth-child(2) { opacity: 0; }
+.nav-toggle.is-active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+.site-nav__links {
+  display: flex;
+  gap: var(--space-5);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.site-nav__links a {
+  position: relative;
+  padding-block: 4px;
+}
+.site-nav__links a::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 100%;
+  bottom: 0;
+  height: 1.5px;
+  background: var(--color-gold);
+  transition: right var(--dur-fast) var(--ease);
+}
+.site-nav__links a:hover::after,
+.site-nav__links a[aria-current="page"]::after { right: 0; }
+.site-nav__links a[aria-current="page"] { color: var(--color-gold); }
+/* Header background is solid navy at all times now (see .site-header
+   above) — --color-gold reaches 5.52:1 contrast against navy, well past
+   WCAG AA's 3:1 minimum for UI text, so no separate .is-solid override
+   is needed anymore (previously this compensated for a lighter
+   scroll-state background that no longer exists). */
+
+.header-cta { flex-shrink: 0; }
+
+@media (max-width: 880px) {
+  .nav-toggle { display: flex; }
+  .site-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    background: var(--color-navy);
+    color: var(--color-on-navy);
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: var(--space-6);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform var(--dur-med) var(--ease), opacity var(--dur-med) var(--ease), visibility var(--dur-med);
+  }
+  .site-nav.is-open {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  .site-nav__links {
+    flex-direction: column;
+    gap: var(--space-4);
+    font-size: var(--step-3);
+  }
+  .header-cta { margin-top: var(--space-5); }
+}
+
+/* ---- Page (interior) hero band ---- */
+.page-hero {
+  position: relative;
+  padding-block: calc(var(--space-9) + 56px) var(--space-7);
+  background: linear-gradient(160deg, var(--color-navy) 0%, var(--color-navy-deep) 100%);
+  color: var(--color-on-navy);
+  overflow: hidden;
+}
+.page-hero__image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.page-hero__image img {
+  width: 100%; height: 100%; object-fit: cover;
+  /* The gradient overlay below (::after) handles text contrast — the
+     image itself should stay clearly visible, not pre-darkened on top
+     of that. Previously this was 0.28, which combined with the overlay
+     to make the photo nearly invisible. */
+}
+.page-hero__image::after {
+  content: "";
+  position: absolute; inset: 0;
+  /* Two layered gradients: a horizontal band pinned to the top keeps the
+     nav bar legible everywhere along its width regardless of how bright
+     the underlying photo is there; the diagonal gradient underneath
+     handles contrast for the left-aligned heading/body text while
+     letting the rest of the photo stay visible. */
+  background:
+    linear-gradient(180deg, rgba(15,28,46,0.75) 0px, rgba(15,28,46,0.75) 88px, rgba(15,28,46,0) 200px),
+    linear-gradient(100deg,
+      rgba(21,44,73,0.88) 0%,
+      rgba(21,44,73,0.72) 32%,
+      rgba(21,44,73,0.36) 62%,
+      rgba(21,44,73,0.46) 100%);
+}
+.page-hero .container { position: relative; z-index: 1; }
+.page-hero h1 { color: var(--color-on-navy); font-size: var(--step-5); max-width: 20ch; text-shadow: 0 2px 16px rgba(10,18,32,0.45); }
+.page-hero p { margin-top: var(--space-3); max-width: 42ch; color: var(--color-on-navy-muted); font-size: var(--step-1); text-shadow: 0 1px 12px rgba(10,18,32,0.55); }
+
+/* ---- Breadcrumb ---- */
+.breadcrumb {
+  display: flex;
+  gap: var(--space-2);
+  font-size: var(--step--1);
+  color: var(--color-on-navy-muted);
+  margin-bottom: var(--space-4);
+}
+.breadcrumb a { color: var(--color-on-navy-muted); border-bottom: 1px solid transparent; }
+.breadcrumb a:hover { color: var(--color-on-navy); border-color: currentColor; }
+.breadcrumb span[aria-hidden] { opacity: 0.5; }
+
+/* ---- Grids ---- */
+.grid { display: grid; gap: var(--space-5); }
+.grid-2 { grid-template-columns: 1fr; }
+.grid-3 { grid-template-columns: 1fr; }
+@media (min-width: 720px) {
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1020px) {
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+.split {
+  display: grid;
+  gap: var(--space-6);
+  align-items: center;
+}
+@media (min-width: 860px) {
+  .split { grid-template-columns: 1.1fr 0.9fr; }
+  .split--reverse { grid-template-columns: 0.9fr 1.1fr; }
+  .split--reverse > *:first-child { order: 2; }
+}
+
+/* ---- Footer ---- */
+.site-footer {
+  background: var(--color-navy-deep);
+  color: var(--color-on-navy-muted);
+  padding-block: var(--space-7) var(--space-5);
+}
+.footer-grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 760px) {
+  .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
+}
+.footer-brand img { height: 44px; margin-bottom: var(--space-3); }
+.footer-brand p { max-width: 34ch; font-size: var(--step--1); }
+.footer-heading {
+  color: var(--color-on-navy);
+  font-size: var(--step--1);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-3);
+}
+.footer-links { display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--step--1); }
+.footer-links a:hover { color: var(--color-on-navy); }
+.footer-bottom {
+  margin-top: var(--space-7);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-hairline-on-navy);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--step--1);
+}
+
+/* Pages with no .page-hero (legal.html, how_to_pay.html) need to clear
+   the fixed header themselves. Was a duplicated inline style on <main>
+   in both templates — one shared class instead. */
+.main--header-offset { padding-top: 96px; }
+
+/* ---- Utility spacing ---- */
+.stack > * + * { margin-top: var(--space-4); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); } .mt-4 { margin-top: var(--space-4); }
+.mt-5 { margin-top: var(--space-5); } .mt-6 { margin-top: var(--space-6); }

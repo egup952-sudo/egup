@@ -1,0 +1,29 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}{{ member.full_name }}{% endblock %}
+{% block heading %}{{ member.full_name }}{% endblock %}
+{% block crumb %}Members / Detail{% endblock %}
+{% block content %}
+<div class="grid grid-2">
+  <div>
+    <p><strong>Membership number:</strong> {{ member.membership_number }}</p>
+    <p><strong>Phone:</strong> {{ member.phone_number }}</p>
+    <p><strong>Email:</strong> {{ member.email|default:"—" }}</p>
+    <p><strong>Gender:</strong> {{ member.get_gender_display }}</p>
+    <p><strong>County:</strong> {{ member.county }}</p>
+    <p><strong>Church:</strong> {{ member.church|default:"—" }}</p>
+    <p><strong>Profession:</strong> {{ member.profession|default:"—" }}</p>
+    <p><strong>Active:</strong> {% if member.is_active %}Yes{% else %}No{% endif %}</p>
+  </div>
+  <div>
+    <h3>Membership history</h3>
+    <table class="table">
+      <thead><tr><th>Start</th><th>Expiry</th><th>Status</th><th>Source</th></tr></thead>
+      <tbody>
+      {% for ms in memberships %}
+        <tr><td>{{ ms.start_date }}</td><td>{{ ms.expiry_date }}</td><td>{{ ms.get_status_display }}</td><td>{{ ms.get_source_display }}</td></tr>
+      {% empty %}<tr><td colspan="4">No membership periods on record.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

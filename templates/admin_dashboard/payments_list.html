@@ -1,0 +1,37 @@
+{% extends "admin_dashboard/_base.html" %}
+{% block title %}Payments{% endblock %}
+{% block heading %}Payments{% endblock %}
+{% block crumb %}Payments{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem;">
+  <form method="get" style="display:flex;gap:8px;flex-wrap:wrap;">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All statuses</option>
+      {% for value, label in status_choices %}<option value="{{ value }}" {% if status == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <select name="provider" onchange="this.form.submit()">
+      <option value="">All methods</option>
+      {% for value, label in provider_choices %}<option value="{{ value }}" {% if provider == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <input type="text" name="q" value="{{ query }}" placeholder="Application #, phone, or transaction code">
+    <button type="submit" class="btn btn--ghost-navy">Filter</button>
+  </form>
+  <a href="{% url 'payments_admin:export' %}" class="btn btn--ghost-navy">Export CSV</a>
+</div>
+<table class="table">
+  <thead><tr><th>Application #</th><th>Purpose</th><th>Method</th><th>Name</th><th>Amount</th><th>Status</th><th>Created</th></tr></thead>
+  <tbody>
+  {% for p in payments %}
+    <tr>
+      <td><a href="{% url 'payments_admin:detail' p.id %}">{{ p.application_number }}</a></td>
+      <td>{{ p.get_purpose_display }}</td>
+      <td>{{ p.get_provider_display }}</td>
+      <td>{{ p.applicant_name }}</td>
+      <td>KES {{ p.amount_kes }}</td>
+      <td>{{ p.get_status_display }}</td>
+      <td>{{ p.created_at|date:"j M Y H:i" }}</td>
+    </tr>
+  {% empty %}<tr><td colspan="7">No payments yet.</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

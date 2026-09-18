@@ -1,0 +1,40 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "public/includes/head_common.html" %}
+<title>{{ page.seo_title|default:page.title }} | EGUP</title>
+<meta name="description" content="{{ page.seo_description }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="EGUP">
+<meta property="og:title" content="{{ page.title }} | EGUP">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+{% include "public/includes/header.html" %}
+<main id="main">
+  <section class="page-hero">
+    <div class="page-hero__image"><img src="{% static 'images/gallery/worship-praise-team.jpg' %}" alt="" loading="eager"></div>
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>{{ page.title }}</span></nav>
+      <h1>{{ page.title }}</h1>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container" style="max-width:820px;">
+      {% for block in blocks %}
+        {% if block.block_type == "heading" %}<h2>{{ block.content }}</h2>
+        {% elif block.block_type == "paragraph" %}<div class="prose">{{ block.content|linebreaks }}</div>
+        {% elif block.block_type == "image" and block.image %}<img src="{{ block.image.file.url }}" alt="{{ block.image.alt_text }}">
+        {% elif block.block_type == "quote" %}<blockquote>{{ block.content }}</blockquote>
+        {% elif block.block_type == "cta" %}<div class="prose">{{ block.content|linebreaks }}</div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+</main>
+{% include "public/includes/footer.html" %}
+<script>document.querySelectorAll('[data-current-year]').forEach(function(el){el.textContent = new Date().getFullYear();});</script>
+<script type="module" src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
