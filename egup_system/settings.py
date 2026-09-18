@@ -107,6 +107,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'egup_system.urls'
+WSGI_APPLICATION = 'egup_system.wsgi.application'
 
 TEMPLATES = [
     {
