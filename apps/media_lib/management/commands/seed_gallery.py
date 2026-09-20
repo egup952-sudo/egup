@@ -59,6 +59,13 @@ HERO_IMAGES = [
 class Command(BaseCommand):
     help = "Seed the gallery and a default hero slide with the original site's real photos. Safe to re-run (skips images already seeded)."
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--noinput", "--no-input",
+            action="store_false", dest="interactive", default=True,
+            help="Do not prompt for confirmation (accepted for consistency with other seed commands; this command never prompts).",
+        )
+
     def handle(self, *args, **options):
         gallery_source = Path(settings.BASE_DIR) / "static" / "images" / "gallery"
         hero_source = Path(settings.BASE_DIR) / "static" / "images" / "hero"

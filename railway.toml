@@ -23,7 +23,7 @@ builder = "NIXPACKS"
 # added permission (e.g. this session's payments.credentials) actually
 # gets attached to the right roles without someone SSHing in to run it
 # by hand.
-startCommand = "python manage.py makemigrations --noinput && python manage.py migrate --noinput && python manage.py seed_roles && python manage.py collectstatic --noinput && gunicorn egup_system.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+startCommand = "python manage.py makemigrations --noinput && python manage.py migrate --noinput && python manage.py seed_roles && python manage.py collectstatic --noinput && python manage.py seed_gallery --noinput && gunicorn egup_system.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
 healthcheckPath = "/"
 healthcheckTimeout = 30
 restartPolicyType = "ON_FAILURE"
